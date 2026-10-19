@@ -291,6 +291,58 @@ h4 {
   box-shadow: var(--shadow-soft);
 }
 
+/* 이미지 + 캡션. rehype-figure 가 이미지 단독 문단을 figure 로 바꿉니다. */
+.prose figure {
+  margin: 2em 0;
+}
+
+/* 마크다운 이미지가 figure 안에서 p 로 감싸여 들어옵니다. */
+.prose figure p {
+  margin: 0;
+}
+
+.prose figure img {
+  margin-inline: auto;
+}
+
+.prose figcaption {
+  margin-top: 0.7em;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+/* 본문 폭보다 넓게 — 다이어그램이나 스크린샷용 */
+.prose figure.wide {
+  width: min(var(--measure-wide), 92vw);
+  margin-inline: calc(50% - min(var(--measure-wide), 92vw) / 2);
+}
+
+/* 형광펜 강조 — <mark> 태그 */
+.prose mark {
+  background: var(--accent-soft);
+  color: inherit;
+  border-radius: 0.2em;
+  padding: 0.05em 0.2em;
+}
+
+/* 뽑아 쓴 인용 — <blockquote class="pull"> */
+.prose blockquote.pull {
+  border-left: none;
+  padding: 0;
+  margin: 2em 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.45;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.prose blockquote.pull p {
+  margin: 0;
+}
+
 .prose table {
   width: 100%;
   border-collapse: collapse;
