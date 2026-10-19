@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import expressiveCode from 'astro-expressive-code';
+import localAdmin from './src/admin/integration.mjs';
 
 // https://astro.build/config
 export default defineConfig({
@@ -18,5 +19,7 @@ export default defineConfig({
       },
     }),
     sitemap(),
+    // dev 서버에서만 /admin 을 띄웁니다. 빌드 산출물에는 포함되지 않습니다.
+    localAdmin(),
   ],
 });

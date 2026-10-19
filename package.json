@@ -7,10 +7,14 @@
     "node": ">=22.22.0"
   },
   "scripts": {
+    "write": "node scripts/open-admin.mjs",
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "dev:stop": "astro dev stop",
+    "dev:logs": "astro dev logs",
+    "dev:status": "astro dev status"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",

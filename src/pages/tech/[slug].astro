@@ -3,7 +3,8 @@ import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('tech', ({ data }) => !data.draft);
+  // dev 에서는 초안도 라우트를 만들어 어드민 미리보기가 되게 합니다.
+  const entries = await getCollection('tech', ({ data }) => import.meta.env.DEV || !data.draft);
   return entries.map((entry) => ({
     params: { slug: entry.id },
     props: { entry },
