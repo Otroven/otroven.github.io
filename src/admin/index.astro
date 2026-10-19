@@ -164,6 +164,7 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
                 <button class="tb" type="button" data-prefix="### " title="더 작은 제목">H3</button>
                 <button class="tb" type="button" data-prefix="> " title="인용">인용</button>
                 <button class="tb" type="button" data-prefix="- " title="목록">목록</button>
+                <button class="tb" type="button" id="tb-divider" title="구분선">구분선</button>
                 <span class="tb-sep"></span>
                 <button class="tb" type="button" id="tb-link" title="링크 (⌘K)">링크</button>
                 <button class="tb" type="button" id="tb-code" title="코드 블록">코드블록</button>
@@ -176,7 +177,7 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
 
             <div id="preview-pane" class="pane pane-preview" hidden>
               <div class="pane-head">
-                <span class="pane-label">미리보기 — 실제 페이지</span>
+                <span class="pane-label">미리보기 — 실제 페이지 <span class="pane-live">실시간</span></span>
                 <button id="preview-close" class="pane-btn" type="button">닫기</button>
               </div>
               <iframe id="preview" title="미리보기"></iframe>
@@ -506,16 +507,25 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
         return { collection, data };
       }
 
-      async function save() {
+      /** 저장 전 검사. 통과하면 null, 아니면 사람이 읽을 이유를 돌려줍니다. */
+      function validate(collection, data, slug) {
+        if (!data.title) return '제목을 입력해주세요.';
+        if (!slug) return '슬러그를 입력해주세요.';
+        if (!data.pubDate) return '작성일을 선택해주세요.';
+        if (collection === 'library' && !data.author) return '저자를 입력해주세요.';
+        if (collection === 'essays' && !data.description) return '에세이는 설명이 필수입니다.';
+        return null;
+      }
+
+      /** quiet = 자동 저장. 성공 토스트를 띄우지 않고 목록 갱신도 생략합니다. */
+      async function save(quiet = false) {
         const { collection, data } = collectData();
         const slug = fields.slug.value.trim() || slugify(data.title);
 
-        if (!data.title) return say('제목을 입력해주세요.', 'error');
-        if (!slug) return say('슬러그를 입력해주세요.', 'error');
-        if (!data.pubDate) return say('작성일을 선택해주세요.', 'error');
-        if (collection === 'library' && !data.author) return say('저자를 입력해주세요.', 'error');
-        if (collection === 'essays' && !data.description) {
-          return say('에세이는 설명이 필수입니다.', 'error');
+        const problem = validate(collection, data, slug);
+        if (problem) {
+          if (!quiet) say(problem, 'error');
+          return false;
         }
 
         fields.slug.value = slug;
@@ -535,14 +545,38 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
           el('delete-btn').hidden = false;
           markDirty(false);
           persist();
-          say(`저장했습니다 — ${res.path}`, 'ok');
           applyCollection();
-          await Promise.all([refreshList(), refreshGit()]);
+
+          if (quiet) {
+            // 자동 저장은 조용히. git 상태만 따라가면 충분합니다.
+            refreshGit();
+          } else {
+            say(`저장했습니다 — ${res.path}`, 'ok');
+            await Promise.all([refreshList(), refreshGit()]);
+          }
           return true;
         } catch (err) {
           say(err.message, 'error');
           return false;
         }
+      }
+
+      /* ---------- 자동 저장 (미리보기 실시간 반영) ----------
+         미리보기는 실제 dev 페이지라, 파일이 바뀌면 Astro HMR 이 iframe 을
+         새로 그립니다. 따라서 "실시간 미리보기" = 디바운스된 자동 저장입니다. */
+
+      let autosaveTimer;
+      function scheduleAutosave() {
+        if (el('preview-pane').hidden) return;
+        // 슬러그를 고치는 중에는 저장하지 않습니다 (한 글자마다 파일이 이름을 바꿉니다).
+        if (document.activeElement === fields.slug) return;
+
+        clearTimeout(autosaveTimer);
+        autosaveTimer = setTimeout(async () => {
+          if (!state.dirty) return;
+          const saved = await save(true);
+          if (!saved) say('자동 저장 보류 — 필수 항목을 채워주세요.', 'error');
+        }, 600);
       }
 
       async function remove() {
@@ -569,6 +603,7 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
         markDirty(true);
         updateCount();
         persist();
+        scheduleAutosave();
       }
 
       /** 선택 영역을 마커로 감싸거나, 이미 감싸져 있으면 벗깁니다. */
@@ -646,6 +681,16 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
         }
       }
 
+      /**
+       * 구분선(---)을 자기 줄에 넣습니다.
+       * 앞뒤로 빈 줄이 있어야 마크다운이 hr 로 읽습니다.
+       */
+      function insertDivider() {
+        const before = fields.body.value.slice(0, fields.body.selectionStart);
+        const lead = before === '' || before.endsWith('\n\n') ? '' : before.endsWith('\n') ? '\n' : '\n\n';
+        insertAtCursor(`${lead}---\n\n`);
+      }
+
       /* ---------- 이미지 ---------- */
 
       async function uploadImage(file) {
@@ -707,12 +752,13 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
       /* ---------- 미리보기 ---------- */
 
       function hidePreview() {
+        clearTimeout(autosaveTimer);
         el('preview-pane').hidden = true;
         el('workspace').classList.remove('is-split');
       }
 
       async function showPreview() {
-        // 미리보기는 실제 dev 서버 페이지를 그대로 띄웁니다. 먼저 저장해야 반영됩니다.
+        // 미리보기는 실제 dev 서버 페이지입니다. 파일이 저장돼 있어야 보입니다.
         if (state.dirty || !state.openSlug) {
           const ok = await save();
           if (!ok) return;
@@ -725,6 +771,20 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
           el('preview').src = `${url}?t=${Date.now()}`;
         }, 250);
       }
+
+      // iframe 이 HMR 로 다시 그려질 때마다 읽던 위치를 되돌려 놓습니다.
+      let previewScroll = 0;
+      el('preview').addEventListener('load', () => {
+        try {
+          const view = el('preview').contentWindow;
+          if (previewScroll) view.scrollTo(0, previewScroll);
+          view.addEventListener('scroll', () => {
+            previewScroll = view.scrollY;
+          }, { passive: true });
+        } catch (err) {
+          /* 접근할 수 없으면 스크롤 복원만 포기합니다 */
+        }
+      });
 
       /* ---------- 커밋 ---------- */
 
@@ -766,10 +826,12 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
           markDirty(true);
           updateCount();
           persist();
+          scheduleAutosave();
         });
         node.addEventListener('change', () => {
           markDirty(true);
           persist();
+          scheduleAutosave();
         });
       }
 
@@ -819,6 +881,7 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
       el('tb-code').addEventListener('click', insertCodeBlock);
       el('tb-image').addEventListener('click', () => el('tb-file').click());
       el('tb-caption').addEventListener('click', wrapInFigure);
+      el('tb-divider').addEventListener('click', insertDivider);
       el('tb-file').addEventListener('change', (e) => {
         if (e.target.files?.length) insertImages(e.target.files);
         e.target.value = '';
@@ -847,15 +910,77 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
       });
 
       el('new-btn').addEventListener('click', newPost);
-      el('save-btn').addEventListener('click', save);
+      // save(quiet) 로 감싸서 넘깁니다. 그냥 save 를 넘기면 click 이벤트가
+      // 첫 인자(quiet)로 들어가 truthy 가 되어 조용히 저장돼 버립니다.
+      el('save-btn').addEventListener('click', () => save());
       el('delete-btn').addEventListener('click', remove);
       el('preview-btn').addEventListener('click', showPreview);
       el('preview-close').addEventListener('click', hidePreview);
       el('commit-btn').addEventListener('click', commit);
 
-      // 탭으로 들여쓰기 (포커스 이동 대신)
+      /** 커서가 ``` 코드 블록 안에 있는지 (여는 울타리 개수가 홀수면 안) */
+      function insideCodeFence(value, caret) {
+        const fences = value.slice(0, caret).match(/^```/gm);
+        return Boolean(fences && fences.length % 2 === 1);
+      }
+
+      /**
+       * 엔터 처리.
+       *
+       * 마크다운은 줄바꿈 하나를 공백으로 취급하므로, 그냥 엔터를 치면
+       * 미리보기에서 줄이 나뉘지 않습니다. 그래서 문단 안에서는 엔터를
+       * 빈 줄 하나(= 새 문단)로 바꿉니다.
+       *
+       *  - 코드 블록 안      → 그냥 줄바꿈
+       *  - 목록/인용 줄       → 같은 표시를 붙여 다음 항목으로 (빈 항목이면 목록 종료)
+       *  - 그 밖              → 새 문단 (빈 줄 하나)
+       *  - Shift+Enter        → 문단 안에서의 줄바꿈 하나
+       */
+      function handleEnter(e) {
+        const ta = fields.body;
+        const { selectionStart: start, selectionEnd: end, value } = ta;
+
+        if (insideCodeFence(value, start)) return; // 기본 동작
+
+        const lineStart = value.lastIndexOf('\n', start - 1) + 1;
+        const line = value.slice(lineStart, start);
+        const marker = /^(\s*)(?:([-*+]|\d+\.)\s+|(>)\s?)/.exec(line);
+
+        let insert = '\n\n';
+
+        if (e.shiftKey) {
+          insert = '\n';
+        } else if (marker) {
+          const rest = line.slice(marker[0].length);
+          if (rest.trim() === '') {
+            // 빈 항목에서 엔터 → 표시를 지우고 목록을 빠져나갑니다.
+            ta.value = value.slice(0, lineStart) + '\n' + value.slice(end);
+            ta.selectionStart = ta.selectionEnd = lineStart + 1;
+            edited();
+            return;
+          }
+          const bullet = marker[2]
+            ? /^\d+\.$/.test(marker[2])
+              ? `${parseInt(marker[2], 10) + 1}. `
+              : `${marker[2]} `
+            : `${marker[3]} `;
+          insert = `\n${marker[1]}${bullet}`;
+        }
+
+        e.preventDefault();
+        ta.value = value.slice(0, start) + insert + value.slice(end);
+        ta.selectionStart = ta.selectionEnd = start + insert.length;
+        edited();
+      }
+
       fields.body.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          handleEnter(e);
+          return;
+        }
         if (e.key !== 'Tab') return;
+
+        // 탭으로 들여쓰기 (포커스 이동 대신)
         e.preventDefault();
         const { selectionStart: s, selectionEnd: t, value } = fields.body;
         fields.body.value = `${value.slice(0, s)}  ${value.slice(t)}`;
@@ -1293,6 +1418,14 @@ const statuses = ['읽는 중', '완독', '다시 읽기'] as const;
 
       .pane-meta {
         text-transform: none;
+      }
+
+      .pane-live {
+        color: var(--accent);
+        background: var(--accent-soft);
+        border-radius: 999px;
+        padding: 0.12em 0.5em;
+        margin-left: 0.3em;
       }
 
       .pane-btn {
