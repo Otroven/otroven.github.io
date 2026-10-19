@@ -1,6 +1,5 @@
 ---
-import { COLLECTION_META, formatDate, type CollectionKind, type Stage } from '../lib/collections';
-import GrowthBadge from './GrowthBadge.astro';
+import { COLLECTION_META, formatDate, type CollectionKind } from '../lib/collections';
 
 interface Props {
   kind: CollectionKind;
@@ -8,11 +7,10 @@ interface Props {
   title: string;
   description?: string;
   pubDate: Date;
-  stage?: Stage;
   tags?: string[];
 }
 
-const { kind, slug, title, description, pubDate, stage, tags = [] } = Astro.props;
+const { kind, slug, title, description, pubDate, tags = [] } = Astro.props;
 const href = `${COLLECTION_META[kind].path}/${slug}/`;
 ---
 
@@ -20,7 +18,6 @@ const href = `${COLLECTION_META[kind].path}/${slug}/`;
   <div class="meta">
     <span class="kind-label">{COLLECTION_META[kind].label}</span>
     <span class="meta">{formatDate(pubDate)}</span>
-    {stage && <GrowthBadge stage={stage} />}
   </div>
   <h3>{title}</h3>
   {description && <p>{description}</p>}

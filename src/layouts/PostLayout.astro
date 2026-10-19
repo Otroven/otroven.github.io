@@ -1,8 +1,7 @@
 ---
 import Base from './Base.astro';
-import GrowthBadge from '../components/GrowthBadge.astro';
 import TagPill from '../components/TagPill.astro';
-import { COLLECTION_META, formatDate, type CollectionKind, type Stage } from '../lib/collections';
+import { COLLECTION_META, formatDate, type CollectionKind } from '../lib/collections';
 
 interface Props {
   kind: CollectionKind;
@@ -11,10 +10,9 @@ interface Props {
   pubDate: Date;
   updatedDate?: Date;
   tags?: string[];
-  stage?: Stage;
 }
 
-const { kind, title, description, pubDate, updatedDate, tags = [], stage } = Astro.props;
+const { kind, title, description, pubDate, updatedDate, tags = [] } = Astro.props;
 const meta = COLLECTION_META[kind];
 ---
 
@@ -30,7 +28,6 @@ const meta = COLLECTION_META[kind];
             <span>· {formatDate(updatedDate)}에 다시 다듬음</span>
           )
         }
-        {stage && <GrowthBadge stage={stage} />}
       </div>
       {
         tags.length > 0 && (

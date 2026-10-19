@@ -29,8 +29,8 @@
     'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --measure: 40rem;
-  --measure-wide: 56rem;
+  --measure: 44rem;
+  --measure-wide: 72rem;
   --radius: 0.5rem;
 
   color-scheme: light;
@@ -191,7 +191,7 @@ h4 {
 }
 
 /* ============================================================
-   태그 필 & 성장 배지
+   태그 필
    ============================================================ */
 
 .tag-pill {
@@ -218,34 +218,6 @@ h4 {
 .tag-pill::before {
   content: '#';
   opacity: 0.55;
-}
-
-.stage-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35em;
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  color: var(--ink-faint);
-  letter-spacing: 0.02em;
-}
-
-.stage-badge .stage-dots {
-  display: inline-flex;
-  gap: 0.22em;
-}
-
-.stage-badge .stage-dots span {
-  width: 5px;
-  height: 5px;
-  border-radius: 999px;
-  background: currentColor;
-  opacity: 0.22;
-}
-
-.stage-badge .stage-dots span[data-filled='true'] {
-  opacity: 0.9;
-  background: var(--accent);
 }
 
 /* ============================================================

@@ -52,7 +52,6 @@ matches.sort((a, b) => b.entry.data.pubDate.valueOf() - a.entry.data.pubDate.val
           title={entry.data.title}
           description={'description' in entry.data ? entry.data.description : undefined}
           pubDate={entry.data.pubDate}
-          stage={'stage' in entry.data ? entry.data.stage : undefined}
           tags={entry.data.tags}
         />
       ))
