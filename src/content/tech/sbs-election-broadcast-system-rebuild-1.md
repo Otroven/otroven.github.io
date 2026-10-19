@@ -1,6 +1,6 @@
 ---
 title: 'SBS 선거방송 시스템 리빌드 ①'
-pubDate: 2026-10-19
+pubDate: 2025-06-16
 tags: ['frontend', '선거방송', 'sbs']
 ---
 
