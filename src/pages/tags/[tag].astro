@@ -4,10 +4,10 @@ import Base from '../../layouts/Base.astro';
 import EntryCard from '../../components/EntryCard.astro';
 import type { CollectionKind } from '../../lib/collections';
 
-const kinds: CollectionKind[] = ['essays', 'notes', 'patterns', 'library'];
+const kinds: CollectionKind[] = ['essays', 'tech', 'library'];
 
 export async function getStaticPaths() {
-  const kinds: CollectionKind[] = ['essays', 'notes', 'patterns', 'library'];
+  const kinds: CollectionKind[] = ['essays', 'tech', 'library'];
   const tagSet = new Set<string>();
 
   for (const kind of kinds) {
@@ -74,9 +74,6 @@ matches.sort((a, b) => b.entry.data.pubDate.valueOf() - a.entry.data.pubDate.val
     color: var(--ink-soft);
   }
   .entry-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
     padding-bottom: 4rem;
     max-width: var(--measure-wide);
   }

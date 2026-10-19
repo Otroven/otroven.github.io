@@ -1,105 +1,87 @@
 /* ============================================================
-   디자인 토큰 — "Night Garden" / "Paper & Ink" 테마
+   디자인 토큰 — 미니멀 에디토리얼, 단일 악센트
    ============================================================ */
 
 :root {
   /* Paper & Ink (light, default) */
-  --bg: #f7f2e7;
-  --bg-raised: #fdfbf5;
-  --bg-sunken: #efe8d8;
-  --ink: #221f1a;
-  --ink-soft: #5c5748;
-  --ink-faint: #8b8370;
-  --border: rgba(34, 31, 26, 0.14);
-  --border-strong: rgba(34, 31, 26, 0.28);
+  --bg: #f7f4ee;
+  --bg-raised: #ffffff;
+  --bg-sunken: #ece7db;
+  --ink: #15141a;
+  --ink-soft: #55524f;
+  --ink-faint: #8a8781;
+  --border: rgba(21, 20, 26, 0.1);
+  --border-strong: rgba(21, 20, 26, 0.24);
 
-  --moss: #4a6741;
-  --moss-bright: #6c8d5f;
-  --clay: #b5542e;
-  --clay-bright: #d06a3f;
-  --dusk: #3d5a68;
-  --dusk-bright: #577c8d;
-  --gold: #a9791f;
-  --gold-bright: #c6963f;
+  --accent: #6d28d9;
+  --accent-bright: #5b21b6;
+  --accent-soft: rgba(109, 40, 217, 0.12);
 
-  --vine: var(--moss);
-  --link: var(--clay);
-  --link-hover: var(--clay-bright);
-  --focus-ring: var(--dusk-bright);
-  --selection: rgba(74, 103, 65, 0.22);
+  --link: var(--accent);
+  --link-hover: var(--accent-bright);
+  --focus-ring: var(--accent);
+  --selection: rgba(109, 40, 217, 0.16);
 
-  --shadow-soft: 0 1px 2px rgba(34, 31, 26, 0.06), 0 8px 24px rgba(34, 31, 26, 0.06);
+  --shadow-soft: 0 1px 2px rgba(21, 20, 26, 0.04), 0 8px 24px rgba(21, 20, 26, 0.05);
 
-  --font-display: 'Fraunces', 'Noto Serif KR', ui-serif, serif;
+  --font-display: 'Space Grotesk', 'Pretendard Variable', 'Noto Sans KR', sans-serif;
   --font-body: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
     'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --measure: 42rem;
-  --measure-wide: 64rem;
-  --radius: 0.6rem;
+  --measure: 40rem;
+  --measure-wide: 56rem;
+  --radius: 0.5rem;
 
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #11140f;
-    --bg-raised: #171c14;
-    --bg-sunken: #0a0c08;
-    --ink: #ece6d6;
-    --ink-soft: #b9b2a0;
-    --ink-faint: #837c6b;
-    --border: rgba(236, 230, 214, 0.14);
-    --border-strong: rgba(236, 230, 214, 0.26);
+    --bg: #0c0c0f;
+    --bg-raised: #17161c;
+    --bg-sunken: #060609;
+    --ink: #f2f0f4;
+    --ink-soft: #aba7b4;
+    --ink-faint: #767287;
+    --border: rgba(242, 240, 244, 0.12);
+    --border-strong: rgba(242, 240, 244, 0.26);
 
-    --moss: #8dbb78;
-    --moss-bright: #a6d18f;
-    --clay: #e2824f;
-    --clay-bright: #ef9a6a;
-    --dusk: #7fa6b8;
-    --dusk-bright: #9cc0d0;
-    --gold: #e0ac55;
-    --gold-bright: #eec077;
+    --accent: #b794f6;
+    --accent-bright: #d2b8fb;
+    --accent-soft: rgba(183, 148, 246, 0.14);
 
-    --vine: var(--moss);
-    --link: var(--clay);
-    --link-hover: var(--clay-bright);
-    --focus-ring: var(--dusk-bright);
-    --selection: rgba(141, 187, 120, 0.26);
+    --link: var(--accent);
+    --link-hover: var(--accent-bright);
+    --focus-ring: var(--accent);
+    --selection: rgba(183, 148, 246, 0.22);
 
-    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 32px rgba(183, 148, 246, 0.08);
 
     color-scheme: dark;
   }
 }
 
 :root[data-theme='dark'] {
-  --bg: #11140f;
-  --bg-raised: #171c14;
-  --bg-sunken: #0a0c08;
-  --ink: #ece6d6;
-  --ink-soft: #b9b2a0;
-  --ink-faint: #837c6b;
-  --border: rgba(236, 230, 214, 0.14);
-  --border-strong: rgba(236, 230, 214, 0.26);
+  --bg: #0c0c0f;
+  --bg-raised: #17161c;
+  --bg-sunken: #060609;
+  --ink: #f2f0f4;
+  --ink-soft: #aba7b4;
+  --ink-faint: #767287;
+  --border: rgba(242, 240, 244, 0.12);
+  --border-strong: rgba(242, 240, 244, 0.26);
 
-  --moss: #8dbb78;
-  --moss-bright: #a6d18f;
-  --clay: #e2824f;
-  --clay-bright: #ef9a6a;
-  --dusk: #7fa6b8;
-  --dusk-bright: #9cc0d0;
-  --gold: #e0ac55;
-  --gold-bright: #eec077;
+  --accent: #b794f6;
+  --accent-bright: #d2b8fb;
+  --accent-soft: rgba(183, 148, 246, 0.14);
 
-  --vine: var(--moss);
-  --link: var(--clay);
-  --link-hover: var(--clay-bright);
-  --focus-ring: var(--dusk-bright);
-  --selection: rgba(141, 187, 120, 0.26);
+  --link: var(--accent);
+  --link-hover: var(--accent-bright);
+  --focus-ring: var(--accent);
+  --selection: rgba(183, 148, 246, 0.22);
 
-  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-soft: 0 1px 2px rgba(0, 0, 0, 0.35), 0 8px 24px rgba(0, 0, 0, 0.4);
 
   color-scheme: dark;
 }
@@ -125,7 +107,7 @@ body {
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 1.0625rem;
-  line-height: 1.75;
+  line-height: 1.7;
   word-break: keep-all;
   overflow-wrap: break-word;
   -webkit-font-smoothing: antialiased;
@@ -171,9 +153,9 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   margin: 0 0 0.5em;
 }
 
@@ -194,7 +176,7 @@ h4 {
 
 .meta {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--ink-faint);
   letter-spacing: 0.01em;
 }
@@ -217,19 +199,20 @@ h4 {
   align-items: center;
   gap: 0.3em;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 500;
   color: var(--ink-soft);
   background: var(--bg-sunken);
-  border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 0.15em 0.75em;
+  padding: 0.22em 0.7em;
   text-decoration: none;
   white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .tag-pill:hover {
-  border-color: var(--border-strong);
-  color: var(--ink);
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
 .tag-pill::before {
@@ -240,15 +223,29 @@ h4 {
 .stage-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.4em;
+  gap: 0.35em;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--ink-soft);
+  font-size: 0.72rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.02em;
 }
 
-.stage-badge svg {
-  width: 1.05em;
-  height: 1.05em;
+.stage-badge .stage-dots {
+  display: inline-flex;
+  gap: 0.22em;
+}
+
+.stage-badge .stage-dots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.22;
+}
+
+.stage-badge .stage-dots span[data-filled='true'] {
+  opacity: 0.9;
+  background: var(--accent);
 }
 
 /* ============================================================
@@ -264,12 +261,12 @@ h4 {
 }
 
 .prose h2 {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   margin-top: 2.2em;
 }
 
 .prose h3 {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
   margin-top: 1.8em;
 }
 
@@ -280,19 +277,23 @@ h4 {
 
 .prose a {
   text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+}
+
+.prose a:hover {
+  text-decoration-color: currentColor;
 }
 
 .prose blockquote {
   margin: 1.3em 0;
-  padding: 0.2em 1.2em;
-  border-left: 3px solid var(--vine);
+  padding: 0.1em 1.2em;
+  border-left: 2px solid var(--border-strong);
   color: var(--ink-soft);
-  font-style: italic;
 }
 
 .prose ul,
 .prose ol {
-  padding-left: 1.4em;
+  padding-left: 1.3em;
 }
 
 .prose li + li {
@@ -303,7 +304,6 @@ h4 {
   font-family: var(--font-mono);
   font-size: 0.85em;
   background: var(--bg-sunken);
-  border: 1px solid var(--border);
   border-radius: 0.3em;
   padding: 0.1em 0.4em;
 }
@@ -327,70 +327,49 @@ h4 {
 
 .prose th,
 .prose td {
-  border: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   padding: 0.5em 0.8em;
   text-align: left;
 }
 
-.prose th {
-  background: var(--bg-sunken);
-}
-
-/* 단락 사이 작은 잎 구분선 */
-.prose .leaf-break {
-  display: flex;
-  justify-content: center;
-  color: var(--vine);
-  opacity: 0.6;
-  margin: 2.5em 0;
-}
-
 /* ============================================================
-   카드 / 리스트
+   목록 — 하프라인 구분선 기반, 장식 최소화
    ============================================================ */
+
+.entry-list {
+  display: flex;
+  flex-direction: column;
+}
 
 .entry-card {
   display: block;
-  padding: 0.9rem 1.2rem 0.9rem 1.15rem;
-  border-radius: 0 var(--radius) var(--radius) 0;
-  border: 1px solid transparent;
-  border-left: 3px solid var(--accent, var(--border));
+  padding: 1.15rem 0.1rem;
+  border-bottom: 1px solid var(--border);
   text-decoration: none;
   color: inherit;
-  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  transition: opacity 0.15s ease;
+}
+
+.entry-list .entry-card:first-child {
+  border-top: 1px solid var(--border);
 }
 
 .entry-card:hover {
-  background: var(--bg-raised);
-  border-color: var(--border);
-  border-left-color: var(--accent, var(--border-strong));
-  transform: translateX(2px);
-}
-
-.entry-card[data-kind='essays'] {
-  --accent: var(--clay);
-}
-.entry-card[data-kind='notes'] {
-  --accent: var(--moss);
-}
-.entry-card[data-kind='patterns'] {
-  --accent: var(--dusk);
-}
-.entry-card[data-kind='library'] {
-  --accent: var(--gold);
+  opacity: 0.72;
 }
 
 .kind-label {
   font-family: var(--font-mono);
   font-size: 0.72rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-weight: 500;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--accent, var(--ink-faint));
+  color: var(--ink-faint);
 }
 
 .entry-card h3 {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
+  font-weight: 600;
   margin-bottom: 0.3em;
   color: var(--ink);
 }

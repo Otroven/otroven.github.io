@@ -18,26 +18,12 @@ const essays = defineCollection({
     }),
 });
 
-const notes = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/notes' }),
+const tech = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/tech' }),
   schema: () =>
     z.object({
       title: z.string(),
       description: z.string().optional(),
-      pubDate: z.coerce.date(),
-      updatedDate: z.coerce.date().optional(),
-      tags: z.array(z.string()).default([]),
-      stage,
-      draft: z.boolean().default(false),
-    }),
-});
-
-const patterns = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/patterns' }),
-  schema: () =>
-    z.object({
-      title: z.string(),
-      description: z.string(),
       pubDate: z.coerce.date(),
       updatedDate: z.coerce.date().optional(),
       tags: z.array(z.string()).default([]),
@@ -60,4 +46,4 @@ const library = defineCollection({
     }),
 });
 
-export const collections = { essays, notes, patterns, library };
+export const collections = { essays, tech, library };

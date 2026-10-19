@@ -8,42 +8,14 @@ interface Props {
 
 const { stage, showLabel = true } = Astro.props;
 const meta = STAGE_META[stage];
-
-// 채워진 비율로 성장 단계를 표현 (씨앗 → 새싹 → 나무)
 const fillLevel = { seed: 1, sapling: 2, tree: 3 }[stage];
 ---
 
 <span class="stage-badge" title={meta.description}>
-  <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <!-- 줄기 -->
-    <path
-      d="M8 14V7"
-      stroke="currentColor"
-      stroke-width="1.4"
-      stroke-linecap="round"
-      opacity={fillLevel >= 2 ? 1 : 0.25}
-    />
-    <!-- 왼쪽 잎 (새싹부터) -->
-    <path
-      d="M8 10C5.8 10 4.6 8.6 4.6 6.8C6.6 6.8 8 8.2 8 10Z"
-      fill="currentColor"
-      opacity={fillLevel >= 2 ? 0.85 : 0.15}
-    />
-    <!-- 오른쪽 잎 (나무일 때) -->
-    <path
-      d="M8 7.4C10.2 7.4 11.4 5.9 11.4 4C9.3 4 8 5.5 8 7.4Z"
-      fill="currentColor"
-      opacity={fillLevel >= 3 ? 0.85 : 0.12}
-    />
-    <!-- 씨앗 알 -->
-    <ellipse
-      cx="8"
-      cy="13"
-      rx="2.3"
-      ry="1.6"
-      fill="currentColor"
-      opacity={fillLevel === 1 ? 0.85 : 0.2}
-    />
-  </svg>
+  <span class="stage-dots" aria-hidden="true">
+    <span data-filled={fillLevel >= 1}></span>
+    <span data-filled={fillLevel >= 2}></span>
+    <span data-filled={fillLevel >= 3}></span>
+  </span>
   {showLabel && <span>{meta.label}</span>}
 </span>

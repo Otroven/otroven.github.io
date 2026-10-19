@@ -4,21 +4,21 @@ import Base from '../../layouts/Base.astro';
 import EntryCard from '../../components/EntryCard.astro';
 import { COLLECTION_META, byDateDesc } from '../../lib/collections';
 
-const meta = COLLECTION_META.patterns;
-const entries = byDateDesc(await getCollection('patterns', ({ data }) => !data.draft));
+const meta = COLLECTION_META.tech;
+const entries = byDateDesc(await getCollection('tech', ({ data }) => !data.draft));
 ---
 
-<Base title="Patterns" description={meta.description}>
+<Base title="Tech" description={meta.description}>
   <header class="list-header">
-    <p class="kind-label">Pattern</p>
-    <h1>패턴</h1>
+    <p class="kind-label">Tech</p>
+    <h1>테크</h1>
     <p class="list-desc">{meta.description}</p>
   </header>
   <div class="entry-list">
     {
       entries.map((entry) => (
         <EntryCard
-          kind="patterns"
+          kind="tech"
           slug={entry.id}
           title={entry.data.title}
           description={entry.data.description}
@@ -45,9 +45,6 @@ const entries = byDateDesc(await getCollection('patterns', ({ data }) => !data.d
     color: var(--ink-soft);
   }
   .entry-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
     padding-bottom: 4rem;
     max-width: var(--measure-wide);
   }

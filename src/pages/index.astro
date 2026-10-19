@@ -5,7 +5,7 @@ import EntryCard from '../components/EntryCard.astro';
 import { SITE_TITLE, SITE_TAGLINE } from '../consts';
 import { COLLECTION_META, type CollectionKind } from '../lib/collections';
 
-const kinds: CollectionKind[] = ['essays', 'notes', 'patterns', 'library'];
+const kinds: CollectionKind[] = ['essays', 'tech', 'library'];
 
 const allEntries = (
   await Promise.all(
@@ -39,17 +39,16 @@ const counts = kinds.map((kind) => ({
       각 글 옆에 성장 단계를 표시해 둡니다.
     </p>
 
-    <div class="hero-sections">
+    <nav class="hero-sections" aria-label="섹션 바로가기">
       {
         counts.map(({ kind, meta, count }) => (
-          <a class="hero-section" data-kind={kind} href={`${meta.path}/`}>
+          <a class="hero-section" href={`${meta.path}/`}>
             <span class="kind-label">{meta.label}</span>
             <span class="hero-count">{count}</span>
-            <span class="hero-desc">{meta.description}</span>
           </a>
         ))
       }
-    </div>
+    </nav>
   </section>
 
   <section class="recent">
@@ -79,71 +78,46 @@ const counts = kinds.map((kind) => ({
   }
 
   .hero h1 {
-    font-size: clamp(2.4rem, 6vw, 3.4rem);
-    margin: 0.2em 0 0.1em;
+    font-size: clamp(2.2rem, 5.5vw, 3rem);
+    margin: 0.25em 0 0.15em;
   }
 
   .hero-tagline {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     color: var(--ink-soft);
     margin: 0 0 1.1rem;
   }
 
   .hero-body {
     color: var(--ink-soft);
-    max-width: 38rem;
+    max-width: 36rem;
   }
 
   .hero-sections {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
-    gap: 0.9rem;
+    display: flex;
+    gap: 1.6rem;
     margin-top: 2.2rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
   }
 
   .hero-section {
     display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    padding: 0.9rem 1rem;
-    border: 1px solid var(--border);
-    border-top: 3px solid var(--accent, var(--border));
-    border-radius: var(--radius);
+    align-items: baseline;
+    gap: 0.4rem;
     text-decoration: none;
-    color: inherit;
-    transition: background-color 0.15s ease, transform 0.15s ease;
+    color: var(--ink-soft);
   }
 
   .hero-section:hover {
-    background: var(--bg-raised);
-    transform: translateY(-2px);
-  }
-
-  .hero-section[data-kind='essays'] {
-    --accent: var(--clay);
-  }
-  .hero-section[data-kind='notes'] {
-    --accent: var(--moss);
-  }
-  .hero-section[data-kind='patterns'] {
-    --accent: var(--dusk);
-  }
-  .hero-section[data-kind='library'] {
-    --accent: var(--gold);
+    color: var(--ink);
   }
 
   .hero-count {
-    font-family: var(--font-display);
-    font-size: 1.6rem;
-    font-weight: 600;
-  }
-
-  .hero-desc {
-    font-size: 0.83rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
     color: var(--ink-faint);
-    line-height: 1.5;
   }
 
   .recent {
@@ -152,18 +126,12 @@ const counts = kinds.map((kind) => ({
   }
 
   .recent-heading {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     font-family: var(--font-mono);
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.04em;
     color: var(--ink-faint);
-    margin-bottom: 1.2rem;
-  }
-
-  .entry-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
+    margin-bottom: 0.4rem;
   }
 </style>

@@ -1,4 +1,4 @@
-export type CollectionKind = 'essays' | 'notes' | 'patterns' | 'library';
+export type CollectionKind = 'essays' | 'tech' | 'library';
 
 export const COLLECTION_META: Record<
   CollectionKind,
@@ -9,15 +9,10 @@ export const COLLECTION_META: Record<
     path: '/essays',
     description: '어느 정도 결론을 낸, 의견이 담긴 긴 글',
   },
-  notes: {
-    label: 'Note',
-    path: '/notes',
-    description: '아직 다 이해하지 못한 것들에 대한 느슨한 메모',
-  },
-  patterns: {
-    label: 'Pattern',
-    path: '/patterns',
-    description: '반복해서 마주치는 설계·구현 패턴 모음',
+  tech: {
+    label: 'Tech',
+    path: '/tech',
+    description: '기술적인 메모, TIL, 반복되는 패턴을 적어두는 곳',
   },
   library: {
     label: 'Library',

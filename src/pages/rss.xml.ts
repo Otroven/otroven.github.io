@@ -5,7 +5,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 import { COLLECTION_META, type CollectionKind } from '../lib/collections';
 
 export async function GET(context: APIContext) {
-  const kinds: CollectionKind[] = ['essays', 'notes', 'patterns'];
+  const kinds: CollectionKind[] = ['essays', 'tech'];
 
   const items = (
     await Promise.all(
