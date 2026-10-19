@@ -1,0 +1,34 @@
+---
+import { COLLECTION_META, formatDate, type CollectionKind, type Stage } from '../lib/collections';
+import GrowthBadge from './GrowthBadge.astro';
+
+interface Props {
+  kind: CollectionKind;
+  slug: string;
+  title: string;
+  description?: string;
+  pubDate: Date;
+  stage?: Stage;
+  tags?: string[];
+}
+
+const { kind, slug, title, description, pubDate, stage, tags = [] } = Astro.props;
+const href = `${COLLECTION_META[kind].path}/${slug}/`;
+---
+
+<a class="entry-card" data-kind={kind} href={href}>
+  <div class="meta">
+    <span class="kind-label">{COLLECTION_META[kind].label}</span>
+    <span class="meta">{formatDate(pubDate)}</span>
+    {stage && <GrowthBadge stage={stage} />}
+  </div>
+  <h3>{title}</h3>
+  {description && <p>{description}</p>}
+  {
+    tags.length > 0 && (
+      <div class="meta" style="margin-top: 0.5em;">
+        {tags.slice(0, 4).map((t) => `#${t}`).join('  ')}
+      </div>
+    )
+  }
+</a>

@@ -1,0 +1,45 @@
+---
+import { SITE_TITLE, SITE_TAGLINE, GITHUB_URL } from '../consts';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p class="meta">
+      {SITE_TITLE} · {SITE_TAGLINE} · © {year}
+    </p>
+    <div class="footer-links meta">
+      <a href="/rss.xml">RSS</a>
+      <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    margin-top: 4rem;
+    padding: 1.6rem 0 2.5rem;
+  }
+
+  .footer-inner {
+    max-width: var(--measure-wide);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .footer-links a {
+    color: var(--ink-faint);
+  }
+
+  .footer-links a:hover {
+    color: var(--ink);
+  }
+</style>

@@ -1,0 +1,169 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import EntryCard from '../components/EntryCard.astro';
+import { SITE_TITLE, SITE_TAGLINE } from '../consts';
+import { COLLECTION_META, type CollectionKind } from '../lib/collections';
+
+const kinds: CollectionKind[] = ['essays', 'notes', 'patterns', 'library'];
+
+const allEntries = (
+  await Promise.all(
+    kinds.map(async (kind) => {
+      const entries = await getCollection(kind, ({ data }) => !data.draft);
+      return entries.map((entry) => ({ kind, entry }));
+    })
+  )
+).flat();
+
+// kind를 유지한 채로 날짜 정렬
+const recentWithKind = allEntries
+  .sort((a, b) => b.entry.data.pubDate.valueOf() - a.entry.data.pubDate.valueOf())
+  .slice(0, 10);
+
+const counts = kinds.map((kind) => ({
+  kind,
+  meta: COLLECTION_META[kind],
+  count: allEntries.filter((e) => e.kind === kind).length,
+}));
+---
+
+<Base>
+  <section class="hero">
+    <p class="meta">digital garden</p>
+    <h1>{SITE_TITLE}</h1>
+    <p class="hero-tagline">{SITE_TAGLINE}</p>
+    <p class="hero-body">
+      이곳의 글은 완성품이 아니라 자라는 중인 생각입니다. 막 심은
+      <strong>씨앗</strong>부터 어느 정도 뿌리를 내린 <strong>나무</strong>까지,
+      각 글 옆에 성장 단계를 표시해 둡니다.
+    </p>
+
+    <div class="hero-sections">
+      {
+        counts.map(({ kind, meta, count }) => (
+          <a class="hero-section" data-kind={kind} href={`${meta.path}/`}>
+            <span class="kind-label">{meta.label}</span>
+            <span class="hero-count">{count}</span>
+            <span class="hero-desc">{meta.description}</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="recent">
+    <h2 class="recent-heading">최근에 심은 것들</h2>
+    <div class="entry-list">
+      {
+        recentWithKind.map(({ kind, entry }) => (
+          <EntryCard
+            kind={kind}
+            slug={entry.id}
+            title={entry.data.title}
+            description={'description' in entry.data ? entry.data.description : undefined}
+            pubDate={entry.data.pubDate}
+            stage={'stage' in entry.data ? entry.data.stage : undefined}
+            tags={entry.data.tags}
+          />
+        ))
+      }
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding: 3.5rem 0 2.5rem;
+    max-width: var(--measure);
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
+    margin: 0.2em 0 0.1em;
+  }
+
+  .hero-tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    margin: 0 0 1.1rem;
+  }
+
+  .hero-body {
+    color: var(--ink-soft);
+    max-width: 38rem;
+  }
+
+  .hero-sections {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
+    gap: 0.9rem;
+    margin-top: 2.2rem;
+  }
+
+  .hero-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent, var(--border));
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+  }
+
+  .hero-section:hover {
+    background: var(--bg-raised);
+    transform: translateY(-2px);
+  }
+
+  .hero-section[data-kind='essays'] {
+    --accent: var(--clay);
+  }
+  .hero-section[data-kind='notes'] {
+    --accent: var(--moss);
+  }
+  .hero-section[data-kind='patterns'] {
+    --accent: var(--dusk);
+  }
+  .hero-section[data-kind='library'] {
+    --accent: var(--gold);
+  }
+
+  .hero-count {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+
+  .hero-desc {
+    font-size: 0.83rem;
+    color: var(--ink-faint);
+    line-height: 1.5;
+  }
+
+  .recent {
+    padding-bottom: 4rem;
+    max-width: var(--measure-wide);
+  }
+
+  .recent-heading {
+    font-size: 1.1rem;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    margin-bottom: 1.2rem;
+  }
+
+  .entry-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+</style>

@@ -1,0 +1,85 @@
+---
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="테마 전환"
+  title="라이트/다크 테마 전환"
+>
+  <svg class="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.6" />
+    <path
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      d="M12 2.5v2.4M12 19.1v2.4M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7"
+    />
+  </svg>
+  <svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linejoin="round"
+      d="M20 14.5A8.5 8.5 0 1 1 9.5 4a6.8 6.8 0 0 0 10.5 10.5Z"
+    />
+  </svg>
+</button>
+
+<style>
+  #theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  #theme-toggle:hover {
+    border-color: var(--border-strong);
+    color: var(--ink);
+  }
+
+  #theme-toggle svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+
+  .icon-moon {
+    display: none;
+  }
+
+  :root[data-theme='dark'] .icon-sun {
+    display: none;
+  }
+  :root[data-theme='dark'] .icon-moon {
+    display: block;
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = 'theme';
+  const button = document.getElementById('theme-toggle');
+
+  function currentTheme(): 'light' | 'dark' {
+    const attr = document.documentElement.getAttribute('data-theme');
+    if (attr === 'light' || attr === 'dark') return attr;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+
+  button?.addEventListener('click', () => {
+    const next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      /* 프라이빗 모드 등에서는 무시 */
+    }
+  });
+</script>

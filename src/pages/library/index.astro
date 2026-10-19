@@ -1,0 +1,76 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import TagPill from '../../components/TagPill.astro';
+import { COLLECTION_META, byDateDesc, formatDate } from '../../lib/collections';
+
+const meta = COLLECTION_META.library;
+const entries = byDateDesc(await getCollection('library', ({ data }) => !data.draft));
+---
+
+<Base title="Library" description={meta.description}>
+  <header class="list-header">
+    <p class="kind-label">Library</p>
+    <h1>서재</h1>
+    <p class="list-desc">{meta.description}</p>
+  </header>
+  <div class="entry-list">
+    {
+      entries.map((entry) => (
+        <a class="entry-card" data-kind="library" href={`/library/${entry.id}/`}>
+          <div class="meta">
+            <span class="kind-label">{entry.data.status}</span>
+            <span class="meta">{formatDate(entry.data.pubDate)}</span>
+            {entry.data.rating && <span class="stars">{'★'.repeat(entry.data.rating)}{'☆'.repeat(5 - entry.data.rating)}</span>}
+          </div>
+          <h3>{entry.data.title}</h3>
+          <p class="author">{entry.data.author}</p>
+          {entry.data.tags.length > 0 && (
+            <div class="tags">
+              {entry.data.tags.map((t) => (
+                <TagPill tag={t} />
+              ))}
+            </div>
+          )}
+        </a>
+      ))
+    }
+    {entries.length === 0 && <p class="meta">아직 기록한 책이 없습니다.</p>}
+  </div>
+</Base>
+
+<style>
+  .list-header {
+    padding: 3rem 0 2rem;
+    max-width: var(--measure);
+  }
+  .list-header h1 {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    margin-top: 0.3rem;
+  }
+  .list-desc {
+    color: var(--ink-soft);
+  }
+  .entry-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-bottom: 4rem;
+    max-width: var(--measure-wide);
+  }
+  .author {
+    font-style: italic;
+    color: var(--ink-soft);
+    margin: 0.2em 0 0;
+  }
+  .stars {
+    color: var(--gold);
+    letter-spacing: 0.05em;
+  }
+  .tags {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+</style>

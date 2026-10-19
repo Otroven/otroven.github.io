@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+
+const updatedAt = new Date('2026-10-19');
+---
+
+<Base title="Now" description="지금 하고 있는 일들">
+  <article class="prose container--narrow page-body">
+    <p class="kind-label">Now</p>
+    <h1>지금 하는 일</h1>
+    <p class="meta">
+      마지막 업데이트: {updatedAt.toLocaleDateString('ko-KR', { year: 'numeric', month: 'long', day: 'numeric' })}
+    </p>
+    <p>
+      <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer">Now 페이지</a>
+      는 자기소개의 "항상 똑같은 한 줄" 대신, 지금 이 순간 무엇에 시간을
+      쓰고 있는지 적어두는 공간입니다. 아래 목록은 종종 업데이트됩니다.
+    </p>
+    <ul>
+      <li>이 블로그를 만들고, 비어 있는 칸들을 하나씩 채우는 중입니다.</li>
+      <li>여기에 지금 읽고 있는 것, 만들고 있는 것을 적어보세요.</li>
+      <li>이 문장을 지우고 진짜 "지금"으로 바꿔주세요.</li>
+    </ul>
+  </article>
+</Base>
+
+<style>
+  .page-body {
+    padding: 3rem 0 4rem;
+  }
+  .page-body h1 {
+    margin-top: 0.3rem;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+  }
+</style>

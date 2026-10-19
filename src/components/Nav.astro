@@ -1,0 +1,130 @@
+---
+import { SITE_TITLE, NAV_LINKS } from '../consts';
+import ThemeToggle from './ThemeToggle.astro';
+
+const path = new URL(Astro.request.url).pathname;
+const isActive = (href: string) => path === href || (href !== '/' && path.startsWith(href));
+---
+
+<header class="site-nav">
+  <div class="container nav-inner">
+    <a class="wordmark" href="/">
+      <svg viewBox="0 0 20 20" aria-hidden="true">
+        <path
+          d="M10 18V9.5"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+        />
+        <path
+          d="M10 12.5C6.5 12.5 5 10.3 5 7.7C8.3 7.7 10 9.7 10 12.5Z"
+          fill="currentColor"
+        />
+        <path
+          d="M10 9.2C13 9.2 14.4 6.9 14.4 4.3C11.6 4.3 10 6.4 10 9.2Z"
+          fill="currentColor"
+        />
+        <ellipse cx="10" cy="17.2" rx="2.6" ry="1.7" fill="currentColor" />
+      </svg>
+      <span>{SITE_TITLE}</span>
+    </a>
+
+    <nav aria-label="주요 메뉴">
+      <ul>
+        {
+          NAV_LINKS.map((link) => (
+            <li>
+              <a href={link.href} aria-current={isActive(link.href) ? 'page' : undefined}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <ThemeToggle />
+  </div>
+</header>
+
+<style>
+  .site-nav {
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: saturate(1.1);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-top: 0.9rem;
+    padding-bottom: 0.9rem;
+    max-width: var(--measure-wide);
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--ink);
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+
+  .wordmark svg {
+    width: 1.3rem;
+    height: 1.3rem;
+    color: var(--moss);
+  }
+
+  nav {
+    flex: 1;
+    overflow-x: auto;
+  }
+
+  nav ul {
+    display: flex;
+    gap: 1.3rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav a {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+    white-space: nowrap;
+    padding: 0.3rem 0;
+    border-bottom: 2px solid transparent;
+  }
+
+  nav a:hover {
+    color: var(--ink);
+  }
+
+  nav a[aria-current='page'] {
+    color: var(--ink);
+    border-bottom-color: var(--clay);
+  }
+
+  @media (max-width: 640px) {
+    .nav-inner {
+      gap: 0.9rem;
+    }
+    nav ul {
+      gap: 0.9rem;
+    }
+    .wordmark span {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,97 @@
+---
+import Base from './Base.astro';
+import GrowthBadge from '../components/GrowthBadge.astro';
+import TagPill from '../components/TagPill.astro';
+import { COLLECTION_META, formatDate, type CollectionKind, type Stage } from '../lib/collections';
+
+interface Props {
+  kind: CollectionKind;
+  title: string;
+  description?: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags?: string[];
+  stage?: Stage;
+}
+
+const { kind, title, description, pubDate, updatedDate, tags = [], stage } = Astro.props;
+const meta = COLLECTION_META[kind];
+---
+
+<Base title={title} description={description} type="article">
+  <article class="post container--narrow">
+    <header class="post-header">
+      <p class="kind-label">{meta.label}</p>
+      <h1>{title}</h1>
+      <div class="post-meta meta">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        {
+          updatedDate && (
+            <span>· {formatDate(updatedDate)}에 다시 다듬음</span>
+          )
+        }
+        {stage && <GrowthBadge stage={stage} />}
+      </div>
+      {
+        tags.length > 0 && (
+          <div class="post-tags">
+            {tags.map((t) => (
+              <TagPill tag={t} />
+            ))}
+          </div>
+        )
+      }
+    </header>
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    <footer class="post-footer">
+      <a href={`${meta.path}/`}>← {meta.label} 목록으로</a>
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .post {
+    padding: 2.5rem 0 4rem;
+    margin: 0 auto;
+  }
+
+  .post-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .post-header h1 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    margin-top: 0.3rem;
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+  }
+
+  .post-tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .post-footer {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .post-footer a {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+</style>

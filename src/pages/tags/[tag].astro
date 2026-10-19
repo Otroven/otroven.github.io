@@ -1,0 +1,83 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import type { CollectionKind } from '../../lib/collections';
+
+const kinds: CollectionKind[] = ['essays', 'notes', 'patterns', 'library'];
+
+export async function getStaticPaths() {
+  const kinds: CollectionKind[] = ['essays', 'notes', 'patterns', 'library'];
+  const tagSet = new Set<string>();
+
+  for (const kind of kinds) {
+    const entries = await getCollection(kind, ({ data }) => !data.draft);
+    for (const entry of entries) {
+      for (const tag of entry.data.tags) tagSet.add(tag);
+    }
+  }
+
+  return Array.from(tagSet).map((tag) => ({ params: { tag } }));
+}
+
+const { tag } = Astro.params;
+
+const matches = (
+  await Promise.all(
+    kinds.map(async (kind) => {
+      const entries = await getCollection(
+        kind,
+        ({ data }) => !data.draft && data.tags.includes(tag!)
+      );
+      return entries.map((entry) => ({ kind, entry }));
+    })
+  )
+).flat();
+
+matches.sort((a, b) => b.entry.data.pubDate.valueOf() - a.entry.data.pubDate.valueOf());
+---
+
+<Base title={`#${tag}`} description={`#${tag} 태그가 달린 글 모음`}>
+  <header class="list-header">
+    <p class="kind-label">Tag</p>
+    <h1>#{tag}</h1>
+    <p class="list-desc">{matches.length}개의 글</p>
+  </header>
+  <div class="entry-list">
+    {
+      matches.map(({ kind, entry }) => (
+        <EntryCard
+          kind={kind}
+          slug={entry.id}
+          title={entry.data.title}
+          description={'description' in entry.data ? entry.data.description : undefined}
+          pubDate={entry.data.pubDate}
+          stage={'stage' in entry.data ? entry.data.stage : undefined}
+          tags={entry.data.tags}
+        />
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .list-header {
+    padding: 3rem 0 2rem;
+    max-width: var(--measure);
+  }
+  .list-header h1 {
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    margin-top: 0.3rem;
+    font-family: var(--font-mono);
+  }
+  .list-desc {
+    color: var(--ink-soft);
+  }
+  .entry-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-bottom: 4rem;
+    max-width: var(--measure-wide);
+  }
+</style>
