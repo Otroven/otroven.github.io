@@ -1,31 +1,542 @@
 ---
 import Base from '../layouts/Base.astro';
 import { GITHUB_URL } from '../consts';
+
+// 연락 채널. 아이콘 없이 텍스트 링크로 — 사이트 전반의 미니멀한 톤을 따릅니다.
+const CONTACT_LINKS = [
+  { label: 'Email', href: 'mailto:veursk@gmail.com' },
+  { label: 'GitHub', href: GITHUB_URL },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/hyunbinleo/' },
+] as const;
+
+// Core — 이력서 상단 요약 3줄
+const CORE = [
+  {
+    title: '웹뷰 하이브리드 앱',
+    body: '웹-앱 브릿지 설계·생체인증 자동 로그인 연결, 첫 진입 JS 번들 67% 감소',
+  },
+  {
+    title: 'AI 제품 0→1',
+    body: 'Claude 교차 검증 파이프라인 기반 수학 문제 서비스를 단독 기획·운영, 재원생 50~100명',
+  },
+  {
+    title: '레거시 현대화',
+    body: '20년 된 델파이 선거방송 시스템을 React로 재구축, 외주 4MM→0 · 생방송 장애 0건',
+  },
+];
+
+// Work — 경력. 각 항목의 items 는 포트폴리오 상세 프로젝트를 요약한 것입니다.
+const WORK = [
+  {
+    org: 'SBS',
+    role: '프론트엔드 개발자',
+    period: '2024.01 – 현재',
+    summary: '사내 앱과 선거방송 프론트엔드를 담당하고 있습니다.',
+    items: [
+      {
+        title: 'SBS 사내 모바일 앱',
+        body: '파편화된 ERP·그룹웨어 모듈 30개+를 RN WebView 앱 하나로 통합. 웹-앱 브릿지를 { type, data } 메시지 규약으로 설계하고, 생체인증 자동 로그인을 연결해 인증 정보는 네이티브에서만 처리. 단일 번들 2.1MB였던 첫 진입을 lazy loading·코드 스플리팅으로 약 710KB까지 줄였습니다(67%↓). 1인 개발 6개월 만에 출시해 임직원 1,000명이 사용 중입니다.',
+      },
+      {
+        title: 'SBS NEW 선거방송 시스템',
+        body: '외주 2명이 2개월씩 붙던 20년 된 델파이 시스템을 React와 Spring으로 재구축. 백엔드 2명과 화면·통신 분리 구조를 설계해, 외주 없이 2025 대선·2026 지선 생방송을 장애 0건으로 운영하고 있습니다.',
+        links: [
+          { label: '데모 사이트', href: 'https://sbs-new-election.web.app/' },
+          { label: '실제 사용 영상', href: 'https://www.youtube.com/watch?v=dnyVQ_zKcu8&t=427s' },
+        ],
+      },
+      {
+        title: 'SBS 영수증 OCR 앱',
+        body: '재무·정산팀 인터뷰로 영수증 수기 처리 문제를 발굴해 기획·개발. 클로바 OCR과 Gemini API 결과를 교차 확인해 오인식을 걸러내고, 사내 보안 정책상 CodePush 서버를 직접 구축해 JS 수정을 스토어 심사 없이 반영했습니다(2026.11 오픈 예정).',
+      },
+    ],
+  },
+  {
+    org: '스냅태그',
+    role: '개발자',
+    period: '2023.01 – 2023.12',
+    summary: '',
+    items: [
+      {
+        title: '비가시성 워터마크 코어 알고리즘',
+        body: 'C++/OpenCV로 개발해 회사 특허 출원에 참여. iOS·Android·React Native·Flutter 4개 플랫폼과 WASM으로 포팅해 WebView에서도 실시간 검출을 구현했습니다.',
+      },
+    ],
+  },
+  {
+    org: 'Diveroid',
+    role: '소프트웨어 인턴',
+    period: '2022.06 – 2022.12',
+    summary: '',
+    items: [
+      {
+        title: '',
+        body: '수중 흔들림·저조도로 사진이 흐려지는 문제를 AVFoundation 자동 보정 카메라 모드로 해결했습니다. 탑재 제품이 킥스타터에서 $33,671 펀딩을 받았습니다.',
+        links: [
+          { label: '킥스타터', href: 'https://www.kickstarter.com/projects/officialdiveroid/diveroid-the-all-in-one-underwater-companion' },
+          
+        ],
+        
+      },
+    ],
+  },
+  {
+    org: '피코미터',
+    role: '창업 · CEO',
+    period: '2021.03 – 2022.06',
+    summary: '',
+    items: [
+      {
+        title: '후드위드(HoodWith) · 여성 안심 지도 앱',
+        body: '범죄 데이터 확보가 막히자 공공 시설물 데이터로 피벗해, 220여 개 지자체에 정보공개청구로 400만 건을 모아 DB화한 뒤 안심 지도 앱을 직접 개발·출시했습니다. 중소벤처기업부 생애최초 청년창업 지원사업에 선정됐습니다.',
+        links: [{ label: '매거진 소개 자료', href: 'https://blog.naver.com/me_travel/223719732270' }],
+      },
+      {
+        title: '',
+        body: '좋은 의도만으로는 충분하지 않다는 것, 사용자가 "좋다"고 말하는 것과 돈을 내고서라도 쓰는 것은 다르다는 것을 이때 배웠습니다.',
+      },
+    ],
+  },
+] as const;
+
+// Projects — 사이드 프로젝트
+const PROJECTS = [
+  {
+    title: 'Math Punk',
+    subtitle: '수학 학원 AI 데일리 문제 서비스',
+    period: '2026.06 – 운영 중 · 1인',
+    summary:
+      '지인이 운영하는 학원의 요청으로 학원 자체 문제 데이터로 매일 새 수학 문제를 생성하고, AI 교차 검증과 강사 승인을 거쳐 발행하는 서비스를 기획부터 운영까지 단독으로 구축했습니다.',
+    bullets: [
+      'Next.js App Router · Supabase로 기획부터 운영까지 단독 개발',
+      '생성 맥락이 없는 새 세션에서 2~3회 독립적으로 풀게 해, 정답 일치 여부를 신뢰도 신호로 쓰는 교차 검증 파이프라인 설계',
+      '강사가 직접 풀어 승인해야만 정식 문제로 등록되게 해 오답 문제의 학생 노출을 차단',
+      '3개월 만에 출시해 재원생 약 50~100명 대상 운영, 검수를 통과한 문제 약 100개 발행',
+    ],
+  },
+];
+
+// Tech Stack
+const STACK = [
+  { label: '주력', items: ['React', 'TypeScript', 'React Native', 'Next.js', 'Tailwind CSS'] },
+  {
+    label: '사용 경험',
+    items: ['React Query', 'Node.js (Express)', 'Supabase', 'Prisma', 'Chart.js', 'Storybook', 'Verdaccio', 'FCM'],
+  },
+  { label: 'AI 활용', items: ['Claude API', 'Gemini API', 'Claude Code', 'Cursor', 'Figma MCP'] },
+];
+
+// Etc
+const ETC = [
+  {
+    body: 'react-native-webview Android 쿠키 동작 차이를 재현 레포와 함께 공식 저장소에 이슈로 제보',
+    href: 'https://github.com/react-native-webview/react-native-webview/issues/3856',
+    linkLabel: '#3856',
+  },
+  { body: '월간 《방송과 기술》 기고 — SBS 선거방송 (2024.05)' },
+  { body: '서울여대 창업보육센터 입주기업 선정 (2021.12)' },
+  { body: '생애최초 청년창업 정부 지원사업 최종 합격 후 협약 (2021.08)' },
+];
 ---
 
-<Base title="About" description="이 사이트를 만든 사람 소개">
-  <article class="prose container--narrow page-body">
+<Base title="About" description="조현빈 — 프론트엔드 개발자 소개">
+  <!-- ========== 프로필 ========== -->
+  <section class="hero">
     <p class="kind-label">About</p>
-    <h1>안녕하세요</h1>
-    <p>
-      이 공간은 개발하면서, 또 이런저런 걸 읽고 만들면서 떠오른 생각을
-      기록하는 개인 블로그입니다. 완벽하게 정리된 글만 올리기보다,
-      쓰는 과정에서 계속 고쳐나가는 쪽을 택했습니다.
+    <h1>
+      <span class="accent">끝까지 책임지는</span> 개발을 합니다.
+    </h1>
+    <p class="hero-body">
+      안녕하세요, 개발자 조현빈입니다.
     </p>
-    <p>
-      코드와 글, 이것저것 벌여놓은 작업들은
-      <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">GitHub</a>
-      에서도 볼 수 있습니다.
+    <p class="hero-body">
+      창업을 해보며 좋은 의도만으로는 충분하지 않다는 걸 배운 뒤로는, 사용자 인터뷰처럼 실제 문제에서
+      출발하는 것을 중요하게 생각합니다.
     </p>
-  </article>
+    <p class="hero-body">
+      그 외에는 <a>헤비(Heavy)</a> 독서가로 철학·심리학·수학처럼 본질을 다루는 분야에 관심이 많고, 거기서 얻은 관점을
+      비즈니스 문제를 푸는 데 활용하려 합니다.
+    </p>
+
+    <div class="contact-row">
+      {
+        CONTACT_LINKS.map((link) => {
+          const isExternal = link.href.startsWith('http');
+          return (
+            <a href={link.href} target={isExternal ? '_blank' : undefined} rel={isExternal ? 'noopener noreferrer' : undefined}>
+              {link.label}
+            </a>
+          );
+        })
+      }
+    </div>
+  </section>
+
+
+  <!-- ========== Work ========== -->
+  <section class="about-section">
+    <header class="section-head">
+      <h2>Work</h2>
+    </header>
+
+    <div class="timeline">
+      {
+        WORK.map((w) => (
+          <div class="timeline-entry">
+            <h3>{w.org}</h3>
+            <p class="meta">
+              {w.role} · {w.period}
+            </p>
+            {w.summary && <p class="entry-summary">{w.summary}</p>}
+
+            <div class="sub-items">
+              {w.items.map((item) =>
+                item.title ? (
+                  <div class="sub-item">
+                    <h4>{item.title}</h4>
+                    <p>{item.body}</p>
+                    {'links' in item && item.links && (
+                      <p class="sub-links">
+                        {item.links.map((l) => (
+                          <a href={l.href} target="_blank" rel="noopener noreferrer">
+                            {l.label} ↗
+                          </a>
+                        ))}
+                      </p>
+                    )}
+                  </div>
+                ) : (
+                  <div class="sub-item">
+                    <p class="sub-item-plain">{item.body}</p>
+                    {'links' in item && item.links && (
+                      <p class="sub-links">
+                        {item.links.map((l) => (
+                          <a href={l.href} target="_blank" rel="noopener noreferrer">
+                            {l.label} ↗
+                          </a>
+                        ))}
+                      </p>
+                    )}
+                  </div>
+                )
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ========== Projects ========== -->
+  <section class="about-section">
+    <header class="section-head">
+      <h2>Projects</h2>
+      <p class="section-desc">회사 밖에서 혼자 기획하고 운영하는 프로젝트입니다.</p>
+    </header>
+
+    <div class="timeline">
+      {
+        PROJECTS.map((p) => (
+          <div class="timeline-entry">
+            <h3>{p.title}</h3>
+            <p class="meta">
+              {p.subtitle} · {p.period}
+            </p>
+            <p class="entry-summary">{p.summary}</p>
+            <ul class="bullet-list">
+              {p.bullets.map((b) => (
+                <li>{b}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ========== Tech Stack ========== -->
+  <section class="about-section">
+    <header class="section-head">
+      <h2>Tech Stack</h2>
+    </header>
+
+    <div class="stack-list">
+      {
+        STACK.map((group) => (
+          <div class="stack-group">
+            <span class="kind-label">{group.label}</span>
+            <div class="stack-pills">
+              {group.items.map((item) => (
+                <span class="stack-pill">{item}</span>
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <!-- ========== Etc ========== -->
+  <section class="about-section about-section--last">
+    <header class="section-head">
+      <h2>Etc</h2>
+    </header>
+
+    <ul class="etc-list">
+      {
+        ETC.map((e) => (
+          <li>
+            {e.body}
+            {e.href && (
+              <>
+                {' '}
+                <a href={e.href} target="_blank" rel="noopener noreferrer">
+                  {e.linkLabel ?? '링크'} ↗
+                </a>
+              </>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </section>
 </Base>
 
 <style>
-  .page-body {
-    padding: 3rem 0 4rem;
+  /* ---------- 프로필 ---------- */
+  .hero {
+    padding: 3rem 0 2.6rem;
+    max-width: 44rem;
   }
-  .page-body h1 {
-    margin-top: 0.3rem;
-    font-size: clamp(2rem, 5vw, 2.8rem);
+
+  .hero h1 {
+    margin-top: 0.5rem;
+    font-size: clamp(1.9rem, 4.6vw, 2.7rem);
+    line-height: 1.3;
+  }
+
+  .hero h1 .accent {
+    color: var(--accent);
+  }
+
+  .hero-body {
+    color: var(--ink-soft);
+    max-width: 38rem;
+  }
+
+  .contact-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem;
+    margin-top: 1.6rem;
+  }
+
+  .contact-row a {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    text-decoration: none;
+  }
+
+  .contact-row a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  /* ---------- 섹션 공통 ---------- */
+  .about-section {
+    padding: 2.8rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .about-section--last {
+    padding-bottom: 4.5rem;
+  }
+
+  .section-head {
+    margin-bottom: 1.8rem;
+    max-width: var(--measure);
+  }
+
+  .section-head h2 {
+    font-size: clamp(1.4rem, 3vw, 1.7rem);
+    margin: 0 0 0.25rem;
+  }
+
+  .section-desc {
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  /* ---------- Core ---------- */
+  .core-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .core-item {
+    padding: 1.4rem 1.3rem;
+    background: var(--bg);
+  }
+
+  .core-item h3 {
+    font-size: 1.02rem;
+    margin: 0 0 0.45em;
+    color: var(--ink);
+  }
+
+  .core-item p {
+    margin: 0;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+  }
+
+  /* ---------- Timeline (Work / Projects) ---------- */
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 2.6rem;
+    max-width: var(--measure);
+  }
+
+  .timeline-entry h3 {
+    font-size: 1.2rem;
+    margin: 0 0 0.3em;
+  }
+
+  .entry-summary {
+    margin: 0.6em 0 0;
+    color: var(--ink-soft);
+  }
+
+  .sub-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    margin-top: 1.1rem;
+  }
+
+  .sub-item h4 {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.35em;
+    color: var(--ink);
+  }
+
+  .sub-item p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .sub-item-plain {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .sub-links {
+    margin: 0.5em 0 0 !important;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .sub-links a {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-decoration: none;
+  }
+
+  .sub-links a:hover {
+    text-decoration: underline;
+  }
+
+  .bullet-list {
+    margin: 1rem 0 0;
+    padding-left: 1.2em;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .bullet-list li + li {
+    margin-top: 0.5em;
+  }
+
+  /* ---------- Tech Stack ---------- */
+  .stack-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    max-width: var(--measure-wide);
+  }
+
+  .stack-group {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .stack-group .kind-label {
+    flex-shrink: 0;
+    width: 4.5rem;
+  }
+
+  .stack-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .stack-pill {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    background: var(--bg-sunken);
+    border-radius: 999px;
+    padding: 0.28em 0.75em;
+  }
+
+  /* ---------- Etc ---------- */
+  .etc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: var(--measure);
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+  }
+
+  .etc-list a {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    text-decoration: none;
+  }
+
+  .etc-list a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 640px) {
+    .hero {
+      padding: 2.2rem 0 2rem;
+    }
+    .stack-group {
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .stack-group .kind-label {
+      width: auto;
+    }
   }
 </style>

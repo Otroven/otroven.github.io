@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { HOME_HEADLINE1, HOME_HEADLINE2, HOME_SUBTITLE, HOME_BODY } from '../consts';
 import { COLLECTION_META, byDateDesc, formatDate } from '../lib/collections';
 
 const essays = byDateDesc(await getCollection('essays', ({ data }) => !data.draft)).slice(0, 4);
@@ -10,14 +9,7 @@ const library = byDateDesc(await getCollection('library', ({ data }) => !data.dr
 ---
 
 <Base>
-  <section class="hero">
-    <h1>{HOME_HEADLINE1}</h1>
-    <h1>{HOME_HEADLINE2}</h1>
-    <p class="hero-subtitle">{HOME_SUBTITLE}</p>
-    <p class="hero-body">{HOME_BODY}</p>
-  </section>
-
-  <!-- Essays — 카드 그리드 -->
+  <!-- Essays — 테두리 없는 느슨한 목록 -->
   <section class="home-section">
     <header class="section-head">
       <h2><a href="/essays/">Essays</a></h2>
@@ -26,12 +18,12 @@ const library = byDateDesc(await getCollection('library', ({ data }) => !data.dr
 
     {
       essays.length > 0 ? (
-        <div class="essay-grid">
+        <div class="essay-list">
           {essays.map((entry) => (
-            <a class="essay-card" href={`/essays/${entry.id}/`}>
-              <h3>{entry.data.title}</h3>
-              <p class="essay-excerpt">{entry.data.description}</p>
+            <a class="essay-item" href={`/essays/${entry.id}/`}>
               <span class="meta">{formatDate(entry.data.pubDate)}</span>
+              <h3>{entry.data.title}</h3>
+              {entry.data.description && <p>{entry.data.description}</p>}
             </a>
           ))}
         </div>
@@ -104,34 +96,15 @@ const library = byDateDesc(await getCollection('library', ({ data }) => !data.dr
 </Base>
 
 <style>
-  /* ---------- 히어로 ---------- */
-  .hero {
-    padding: 4rem 0 3rem;
-    max-width: 48rem;
-  }
-
-  .hero h1 {
-    font-size: clamp(2rem, 5.2vw, 3.1rem);
-    line-height: 1.2;
-    margin: 0 0 0.6rem;
-  }
-
-  .hero-subtitle {
-    font-size: 1.1rem;
-    color: var(--ink-soft);
-    margin: 0 0 1rem;
-  }
-
-  .hero-body {
-    color: var(--ink-soft);
-    max-width: 38rem;
-    margin: 0;
-  }
-
   /* ---------- 섹션 공통 ---------- */
   .home-section {
     padding: 2.8rem 0;
     border-top: 1px solid var(--border);
+  }
+
+  .home-section:first-child {
+    padding-top: 3.2rem;
+    border-top: none;
   }
 
   .home-section:last-child {
@@ -179,44 +152,41 @@ const library = byDateDesc(await getCollection('library', ({ data }) => !data.dr
     margin: 0;
   }
 
-  /* ---------- Essays: 카드 그리드 ---------- */
-  .essay-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-
-  .essay-card {
+  /* ---------- Essays: 테두리 없는 목록 ---------- */
+  .essay-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 1.4rem 1.3rem;
-    background: var(--bg);
+    gap: 1.6rem;
+    max-width: var(--measure-wide);
+  }
+
+  .essay-item {
+    display: block;
     text-decoration: none;
     color: inherit;
-    transition: background-color 0.15s ease;
   }
 
-  .essay-card:hover {
-    background: var(--bg-sunken);
+  .essay-item .meta {
+    display: block;
+    margin-bottom: 0.3em;
   }
 
-  .essay-card h3 {
-    font-size: 1.12rem;
+  .essay-item h3 {
+    font-size: 1.05rem;
     font-weight: 600;
-    margin: 0;
+    margin: 0 0 0.25em;
     color: var(--ink);
+    transition: color 0.15s ease;
   }
 
-  .essay-excerpt {
-    flex: 1;
+  .essay-item p {
     margin: 0;
     font-size: 0.93rem;
     color: var(--ink-soft);
+  }
+
+  .essay-item:hover h3 {
+    color: var(--accent);
   }
 
   /* ---------- Tech: 제목 목록 ---------- */
@@ -307,8 +277,8 @@ const library = byDateDesc(await getCollection('library', ({ data }) => !data.dr
   }
 
   @media (max-width: 640px) {
-    .hero {
-      padding: 2.5rem 0 2rem;
+    .home-section:first-child {
+      padding-top: 2.2rem;
     }
     .note-list {
       columns: 1;
