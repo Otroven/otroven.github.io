@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
-import { HOME_HEADLINE, HOME_SUBTITLE, HOME_BODY } from '../consts';
+import { HOME_HEADLINE1, HOME_HEADLINE2, HOME_SUBTITLE, HOME_BODY } from '../consts';
 import { COLLECTION_META, byDateDesc, formatDate } from '../lib/collections';
 
 const essays = byDateDesc(await getCollection('essays', ({ data }) => !data.draft)).slice(0, 4);
@@ -11,7 +11,8 @@ const library = byDateDesc(await getCollection('library', ({ data }) => !data.dr
 
 <Base>
   <section class="hero">
-    <h1>{HOME_HEADLINE}</h1>
+    <h1>{HOME_HEADLINE1}</h1>
+    <h1>{HOME_HEADLINE2}</h1>
     <p class="hero-subtitle">{HOME_SUBTITLE}</p>
     <p class="hero-body">{HOME_BODY}</p>
   </section>

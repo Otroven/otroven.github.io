@@ -7,17 +7,17 @@ export const COLLECTION_META: Record<
   essays: {
     label: 'Essay',
     path: '/essays',
-    description: '어느 정도 결론을 낸, 의견이 담긴 긴 글',
+    description: '나의 주관이 담긴 에세이',
   },
   tech: {
     label: 'Tech',
     path: '/tech',
-    description: '기술적인 메모, TIL, 반복해서 마주치는 패턴',
+    description: '기술에 관한 모든 것',
   },
   library: {
     label: 'Library',
     path: '/library',
-    description: '읽은 책과 자료, 그리고 짧은 소감',
+    description: '읽은 책, 그리고 짧은 소감',
   },
 };
 
