@@ -5,7 +5,6 @@ status: '읽는 중'
 rating: 5
 pubDate: 2026-09-06
 tags: ['AI']
-draft: true
 ---
 
 바이브 코딩의 핵심과 원리를 설명하는 책.
