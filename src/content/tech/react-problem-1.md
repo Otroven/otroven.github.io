@@ -2,7 +2,6 @@
 title: '어느 날 들어온 리액트 문제 출제 건'
 pubDate: 2026-09-22
 tags: ['react']
-draft: true
 ---
 
 저번주에 지인에게 부탁을 받아서 주니어 프론트엔드 개발자 면접관으로 참여했다.
@@ -30,7 +29,7 @@ draft: true
 이번 면접을 통해 만들어 본 아래 문제 코드가 이제 막 프론트엔드 개발에 입문하는 주니어 개발자분들에게 도움이 되길 바랍니다.
 
 
-<iframe src="https://codesandbox.io/embed/3628rd?view=editor+%2B+preview&module=%2Fsrc%2FApp.js"
+<iframe src="https://codesandbox.io/embed/3628rd?view=split&fontsize=12&module=%2Fsrc%2FApp.js"
      style="width:100%; height: 500px; border:0; border-radius: 4px; overflow:hidden;"
      title="usestate-fundamental"
      allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
