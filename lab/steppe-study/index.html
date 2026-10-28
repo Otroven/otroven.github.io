@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+      }
+      img {
+        max-width: 100%;
+      }
+      [hidden] {
+        display: none !important;
+      }
+    </style>
+    <title>Field Study 01</title>
+    <meta name="claude:viewport-fit-sides" content="cover" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+    />
+    <style>
+      /* Layout: a magazine column of paper bands; between them, full-bleed "plates" that are open windows onto one live WebGL steppe behind the page. */
+      :root {
+        --paper: #f2f3ef;
+        --ink: #262a25;
+        --muted: #686f66;
+        --line: #d6d9d1;
+        --accent: #8a6b2e;
+        --plate-ink: #f7f6f1;
+        --display:
+          "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+        --body:
+          "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui,
+          sans-serif;
+        --mono:
+          "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --paper: #121411;
+          --ink: #e5e7e1;
+          --muted: #9ba196;
+          --line: #2b2f29;
+          --accent: #c9a660;
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme="dark"] {
+        --paper: #121411;
+        --ink: #e5e7e1;
+        --muted: #9ba196;
+        --line: #2b2f29;
+        --accent: #c9a660;
+        color-scheme: dark;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: var(--body);
+        font-size: 16px;
+        line-height: 1.75;
+        -webkit-font-smoothing: antialiased;
+      }
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0 0 auto;
+        height: env(safe-area-inset-top, 0px);
+        z-index: 10;
+        background: var(--paper);
+      }
+
+      #scene {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        display: block;
+        background: #c9b7a2;
+      }
+      main {
+        position: relative;
+        z-index: 1;
+      }
+      .band {
+        background: var(--paper);
+        padding-left: max(16px, env(safe-area-inset-left, 0px));
+        padding-right: max(16px, env(safe-area-inset-right, 0px));
+      }
+      .col {
+        max-width: 680px;
+        margin-inline: auto;
+      }
+
+      header.top {
+        position: sticky;
+        top: env(safe-area-inset-top, 0px);
+        z-index: 5;
+        border-bottom: 1px solid var(--line);
+      }
+      header.top .row {
+        max-width: 1120px;
+        margin-inline: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding-block: 12px;
+        font-family: var(--mono);
+        font-size: 11.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      header.top b {
+        color: var(--ink);
+        font-weight: 500;
+      }
+
+      .intro {
+        padding-block: 56px 48px;
+      }
+      .eyebrow {
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      h1 {
+        font-family: var(--display);
+        font-stretch: 68%;
+        font-weight: 800;
+        font-size: clamp(48px, 10vw, 112px);
+        line-height: 0.9;
+        letter-spacing: -0.01em;
+        text-transform: uppercase;
+        margin: 14px 0 22px;
+        text-wrap: balance;
+      }
+      .dek {
+        font-size: 19px;
+        line-height: 1.6;
+        font-weight: 500;
+        margin: 0 0 28px;
+        text-wrap: pretty;
+      }
+      dl.meta {
+        display: grid;
+        grid-template-columns: 7.5em 1fr;
+        gap: 6px 16px;
+        margin: 0 0 32px;
+        padding-block: 16px;
+        border-block: 1px solid var(--line);
+        font-size: 14px;
+      }
+      dl.meta dt {
+        font-family: var(--mono);
+        font-size: 11.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+        padding-top: 3px;
+      }
+      dl.meta dd {
+        margin: 0;
+        min-width: 0;
+      }
+      p {
+        margin: 0 0 1.1em;
+      }
+      .lede p:last-child {
+        margin-bottom: 0;
+      }
+
+      .plate {
+        position: relative;
+        height: 82vh;
+        min-height: 440px;
+        max-height: 920px;
+        cursor: crosshair;
+        touch-action: pan-y;
+        margin: 0;
+      }
+      .plate figcaption {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 18px max(16px, env(safe-area-inset-right, 0px)) 18px
+          max(16px, env(safe-area-inset-left, 0px));
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+        gap: 16px;
+        flex-wrap: wrap;
+        color: var(--plate-ink);
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
+        pointer-events: none;
+      }
+      .plate figcaption .no {
+        font-family: var(--display);
+        font-stretch: 70%;
+        font-weight: 800;
+        font-size: 34px;
+        letter-spacing: 0;
+        line-height: 1;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .gust {
+        pointer-events: auto;
+        font: inherit;
+        color: inherit;
+        background: rgba(20, 22, 18, 0.35);
+        border: 1px solid rgba(247, 246, 241, 0.6);
+        padding: 8px 12px;
+        cursor: pointer;
+        backdrop-filter: blur(4px);
+      }
+      .gust:hover {
+        background: rgba(20, 22, 18, 0.55);
+      }
+      .gust:focus-visible,
+      a:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+      }
+
+      .kit {
+        padding-block: 48px;
+      }
+      .kit-grid {
+        display: grid;
+        grid-template-columns: 12em minmax(0, 1fr);
+        gap: 32px;
+        max-width: 760px;
+        margin-inline: auto;
+      }
+      .kit .tag {
+        font-family: var(--mono);
+        font-size: 11.5px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        display: block;
+      }
+      .kit .big {
+        display: block;
+        font-family: var(--display);
+        font-stretch: 70%;
+        font-weight: 800;
+        font-size: 64px;
+        line-height: 0.9;
+        margin: 14px 0 12px;
+        font-variant-numeric: tabular-nums;
+      }
+      .kit .big small {
+        font-size: 0.42em;
+        font-weight: 700;
+      }
+      .cond dl {
+        display: grid;
+        grid-template-columns: 3.6em 1fr;
+        gap: 4px 10px;
+        margin: 0;
+        font-family: var(--mono);
+        font-size: 12.5px;
+      }
+      .cond dt {
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .cond dd {
+        margin: 0;
+      }
+      .items .mood {
+        font-size: 17px;
+        line-height: 1.7;
+        margin: 0 0 20px;
+        text-wrap: pretty;
+      }
+      .items ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 14px;
+      }
+      .items li {
+        display: grid;
+        gap: 2px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+      .items li b {
+        font-size: 17px;
+        font-weight: 700;
+      }
+      .items .mat {
+        font-family: var(--mono);
+        font-size: 11.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+      .items .why {
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .kicker {
+        font-family: var(--mono);
+        font-size: 11.5px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--accent);
+      }
+
+      footer {
+        padding-block: 40px 64px;
+        border-top: 1px solid var(--line);
+        font-size: 13.5px;
+        color: var(--muted);
+      }
+      footer a {
+        color: var(--ink);
+      }
+      footer .links {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+        margin-top: 10px;
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .no-webgl #scene {
+        display: none;
+      }
+      .no-webgl .plate[data-i="0"] {
+        background: linear-gradient(#2b3a55, #e9b48a 62%, #6c6a3d 63%, #3b4a2a);
+      }
+      .no-webgl .plate[data-i="1"] {
+        background: linear-gradient(#3f7fc4, #cfe3ef 62%, #8c9a4c 63%, #4d6b2c);
+      }
+      .no-webgl .plate[data-i="2"] {
+        background: linear-gradient(#3a2f55, #f08a5d 62%, #7a5a33 63%, #3a3a24);
+      }
+      .no-webgl .plate[data-i="3"] {
+        background: linear-gradient(#04060d, #1a2238 62%, #1b2420 63%, #0d1410);
+      }
+
+      @media (max-width: 640px) {
+        body {
+          font-size: 15px;
+        }
+        .dek {
+          font-size: 17px;
+        }
+        dl.meta {
+          grid-template-columns: 1fr;
+          gap: 2px;
+        }
+        dl.meta dd {
+          margin-bottom: 8px;
+        }
+        header.top .hide-s {
+          display: none;
+        }
+        .kit-grid {
+          grid-template-columns: 1fr;
+          gap: 18px;
+        }
+        .kit .big {
+          font-size: 52px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="scene" aria-hidden="true"></canvas>
+
+    <main>
+      <header class="top band">
+        <div class="row">
+          <span><b>Field Study 01</b> · Steppe Study</span
+          ><span class="hide-s">조현빈 · 개인 작업</span>
+        </div>
+      </header>
+
+      <section class="band intro">
+        <div class="col">
+          <h1>Steppe Study</h1>
+          <p class="dek">
+            몽골 초원에서 찍은 룩북 한 편에서 출발한 3D 장면 연구입니다.
+            스크롤하면 새벽부터 밤까지 하루가 흐르고, 장면마다 그 날씨에
+            어울리는 옷을 함께 적었습니다.
+          </p>
+          <dl class="meta">
+            <dt>출발점</dt>
+            <dd>
+              thisisneverthat × GORE-TEX FW25 "뉴 필드 무드" 룩북 (2025.11)
+            </dd>
+
+            <dt>기술</dt>
+            <dd>three.js r160, GLSL 셰이더</dd>
+            <dt>조작</dt>
+            <dd>
+              스크롤하면 하루가 흐릅니다. 장면을 누르면 그 자리에서 바람이
+              일어납니다.
+            </dd>
+          </dl>
+          <div class="lede">
+            <p>
+              이 룩북에서 가장 오래 남은 건 장면이었습니다. 넓은 초원과 바람과
+              빛 속에 옷을 세워 두는 방식이었습니다. 그 장면의 공기를 웹에서
+              직접 만들어 보고 싶어서 시작한 연구입니다.
+            </p>
+            <p>
+              룩북 사진은 한 장도 쓰지 않았습니다. 아래 장면은 모두 지금 이
+              브라우저에서 그려지고 있습니다.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <figure class="plate" data-i="0">
+        <figcaption>
+          <span
+            ><span class="no">Plate 01</span>Dawn 05:40 · −14°C · Wind 0.8
+            m/s</span
+          ><span>47°N 106°E · Steppe</span>
+        </figcaption>
+      </figure>
+
+      <section class="band kit">
+        <div class="kit-grid">
+          <div class="cond">
+            <span class="tag">Plate 01 — Dawn</span>
+            <span class="big">−14°C</span>
+            <dl>
+              <dt>Time</dt>
+              <dd>05:40</dd>
+              <dt>Wind</dt>
+              <dd>0.8 m/s</dd>
+              <dt>Sky</dt>
+              <dd>해 뜨기 직전</dd>
+            </dl>
+          </div>
+          <div class="items">
+            <span class="kicker">Field Kit</span>
+            <p class="mood">
+              해 뜨기 직전의 초원은 바람 한 점 없이 조용하고, 하루 중 가장
+              춥습니다. 이 시간에는 먼저 따뜻함을 챙깁니다.
+            </p>
+            <ul>
+              <li>
+                <b>익스페디션 다운 재킷</b
+                ><span class="mat">GORE-TEX WINDSTOPPER®</span
+                ><span class="why"
+                  >움직임이 적은 새벽, 몸을 통째로 감싸는 한 벌</span
+                >
+              </li>
+              <li>
+                <b>바라클라바 · 글러브</b><span class="mat">Accessories</span
+                ><span class="why">얼굴과 손끝까지 덮는 마무리</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <figure class="plate" data-i="1">
+        <figcaption>
+          <span
+            ><span class="no">Plate 02</span>Noon 12:20 · −3°C · Wind 7.2
+            m/s</span
+          ><button class="gust" type="button" id="gust-btn">
+            돌풍 일으키기
+          </button>
+        </figcaption>
+      </figure>
+
+      <section class="band kit">
+        <div class="kit-grid">
+          <div class="cond">
+            <span class="tag">Plate 02 — Noon</span>
+            <span class="big">7.2<small> m/s</small></span>
+            <dl>
+              <dt>Time</dt>
+              <dd>12:20</dd>
+              <dt>Temp</dt>
+              <dd>−3°C</dd>
+              <dt>Sky</dt>
+              <dd>맑음, 강한 바람</dd>
+            </dl>
+          </div>
+          <div class="items">
+            <span class="kicker">Field Kit</span>
+            <p class="mood">
+              한낮에는 해가 높지만 바람이 셉니다. 초속 7m가 넘는 바람이 초원
+              전체를 한 방향으로 쓸고 지나갑니다. 위의 장면을 눌러 직접 바람을
+              일으켜 보세요.
+            </p>
+            <ul>
+              <li>
+                <b>올웨더 재킷 · 팬츠</b><span class="mat">GORE-TEX 3L</span
+                ><span class="why"
+                  >방수·방풍·투습. 바람을 정면으로 맞으며 걷기 위한 위아래 한
+                  벌</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <figure class="plate" data-i="2">
+        <figcaption>
+          <span
+            ><span class="no">Plate 03</span>Dusk 18:50 · −8°C · Wind 3.1
+            m/s</span
+          ><span>Gers on the ridge</span>
+        </figcaption>
+      </figure>
+
+      <section class="band kit">
+        <div class="kit-grid">
+          <div class="cond">
+            <span class="tag">Plate 03 — Dusk</span>
+            <span class="big">−8°C</span>
+            <dl>
+              <dt>Time</dt>
+              <dd>18:50</dd>
+              <dt>Wind</dt>
+              <dd>3.1 m/s</dd>
+              <dt>Sky</dt>
+              <dd>해 질 녘</dd>
+            </dl>
+          </div>
+          <div class="items">
+            <span class="kicker">Field Kit</span>
+            <p class="mood">
+              해가 지면 하늘과 풀의 색이 함께 바뀌고, 기온이 빠르게 떨어집니다.
+              바람은 잦아들지만 공기가 차가워지는 시간입니다.
+            </p>
+            <ul>
+              <li>
+                <b>푸퍼 다운 재킷</b
+                ><span class="mat">GORE-TEX WINDSTOPPER®</span
+                ><span class="why">식어 가는 공기에 한 겹 더하는 보온</span>
+              </li>
+              <li>
+                <b>플리스 크루넥 · 팬츠</b><span class="mat">Fleece</span
+                ><span class="why">안에 받쳐 입는 중간층</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <figure class="plate" data-i="3">
+        <figcaption>
+          <span
+            ><span class="no">Plate 04</span>Night 22:30 · −17°C · Wind 1.8
+            m/s</span
+          ><span>Stars over the steppe</span>
+        </figcaption>
+      </figure>
+
+      <section class="band kit">
+        <div class="kit-grid">
+          <div class="cond">
+            <span class="tag">Plate 04 — Night</span>
+            <span class="big">−17°C</span>
+            <dl>
+              <dt>Time</dt>
+              <dd>22:30</dd>
+              <dt>Wind</dt>
+              <dd>1.8 m/s</dd>
+              <dt>Sky</dt>
+              <dd>맑음, 별</dd>
+            </dl>
+          </div>
+          <div class="items">
+            <span class="kicker">Field Kit</span>
+            <p class="mood">
+              밤의 초원에는 별만 남습니다. 게르 안팎을 오가는 시간에는 쉽게 벗고
+              다시 덮을 수 있는 것들이 필요합니다.
+            </p>
+            <ul>
+              <li>
+                <b>리버서블 니트</b><span class="mat">Knit</span
+                ><span class="why">게르 안에서도, 밖에서도 입는 한 장</span>
+              </li>
+              <li>
+                <b>헤드웨어</b><span class="mat">Headwear</span
+                ><span class="why">별을 보러 나설 때 마지막으로 챙기는 것</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <footer class="band">
+        <div class="col">
+          <p>
+            이 페이지는 조현빈의 개인 학습 작업이며 thisisneverthat, GORE-TEX와
+            관련이 없습니다. 원본 룩북의 사진은 사용하지 않았습니다.
+          </p>
+          <p>
+            장면의 기온과 바람은 연출을 위해 정한 값입니다. 아이템 이름과 소재는
+            무신사와 논라벨 기사를 참고했고, 이 컬렉션은 2025년 11월 14일부터
+            디스이즈네버댓 온·오프라인 스토어에서 판매되었습니다.
+          </p>
+          <div class="links">
+            <a
+              href="https://www.musinsa.com/content/1438435033721149667"
+              target="_blank"
+              rel="noopener"
+              >원본 룩북 기사 (무신사)</a
+            >
+            <a
+              href="https://nonlabel.co.kr/issue/?bmode=view&amp;idx=168551014"
+              target="_blank"
+              rel="noopener"
+              >컬렉션 소개 (논라벨)</a
+            >
+            <a
+              href="https://www.linkedin.com/in/hyunbinleo/"
+              target="_blank"
+              rel="noopener"
+              >LinkedIn</a
+            >
+            <a href="https://otroven.github.io/" target="_blank" rel="noopener"
+              >Blog</a
+            >
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <script type="module">
+      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
+
+      THREE.ColorManagement.enabled = false;
+
+      const canvas = document.getElementById("scene");
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas,
+          antialias: true,
+          powerPreference: "high-performance",
+        });
+      } catch (e) {
+        document.documentElement.classList.add("no-webgl");
+      }
+
+      if (renderer) {
+        renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+        const reduce = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+        const small = Math.min(window.innerWidth, window.innerHeight) < 700;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(52, 1, 0.1, 2400);
+
+        const ss = (a, b, x) => {
+          const t = Math.min(Math.max((x - a) / (b - a), 0), 1);
+          return t * t * (3 - 2 * t);
+        };
+        function H(x, z) {
+          let h =
+            1.6 * Math.sin(x * 0.045) * Math.cos(z * 0.038) +
+            0.7 * Math.sin(x * 0.11 + z * 0.07) +
+            0.35 * Math.sin(z * 0.19 - x * 0.08);
+          const mf = Math.max(ss(70, 220, Math.abs(x)), ss(230, 380, -z));
+          h +=
+            mf *
+            (26 + 12 * Math.sin(x * 0.02 + z * 0.015)) *
+            (0.6 + 0.4 * Math.sin(x * 0.05) * Math.sin(z * 0.04));
+          return h;
+        }
+        const H_GLSL = `
+    float H(vec2 p){
+      float h = 1.6*sin(p.x*0.045)*cos(p.y*0.038) + 0.7*sin(p.x*0.11 + p.y*0.07) + 0.35*sin(p.y*0.19 - p.x*0.08);
+      float mf = max(smoothstep(70.0,220.0,abs(p.x)), smoothstep(230.0,380.0,-p.y));
+      h += mf*(26.0 + 12.0*sin(p.x*0.02 + p.y*0.015))*(0.6 + 0.4*sin(p.x*0.05)*sin(p.y*0.04));
+      return h;
+    }`;
+
+        const tGeo = new THREE.PlaneGeometry(
+          900,
+          700,
+          small ? 160 : 240,
+          small ? 120 : 180,
+        );
+        tGeo.rotateX(-Math.PI / 2);
+        tGeo.translate(0, 0, -200);
+        const tp = tGeo.attributes.position;
+        for (let i = 0; i < tp.count; i++)
+          tp.setY(i, H(tp.getX(i), tp.getZ(i)));
+        tGeo.computeVertexNormals();
+        const tMat = new THREE.MeshLambertMaterial({ color: 0x3b4a2a });
+        const terrain = new THREE.Mesh(tGeo, tMat);
+        scene.add(terrain);
+
+        const gerMat = new THREE.MeshLambertMaterial({ color: 0xece8de });
+        const gerRoof = new THREE.MeshLambertMaterial({ color: 0xd9d2c3 });
+        [
+          [14, -58],
+          [19, -63],
+          [-22, -98],
+          [26, -132],
+          [-30, -140],
+        ].forEach(([x, z]) => {
+          const g = new THREE.Group();
+          const wall = new THREE.Mesh(
+            new THREE.CylinderGeometry(2.7, 2.7, 1.7, 28),
+            gerMat,
+          );
+          wall.position.y = 0.85;
+          const roof = new THREE.Mesh(
+            new THREE.ConeGeometry(2.95, 1.25, 28),
+            gerRoof,
+          );
+          roof.position.y = 2.3;
+          g.add(wall, roof);
+          g.position.set(x, H(x, z) - 0.15, z);
+          scene.add(g);
+        });
+
+        const skyU = {
+          uTop: { value: new THREE.Color() },
+          uHorizon: { value: new THREE.Color() },
+          uGround: { value: new THREE.Color() },
+          uSunDir: { value: new THREE.Vector3(0, 1, 0) },
+          uSunColor: { value: new THREE.Color() },
+          uSunVis: { value: 1 },
+        };
+        const sky = new THREE.Mesh(
+          new THREE.SphereGeometry(1200, 32, 16),
+          new THREE.ShaderMaterial({
+            uniforms: skyU,
+            side: THREE.BackSide,
+            depthWrite: false,
+            fog: false,
+            vertexShader: `varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix*modelViewMatrix*vec4(position,1.0); }`,
+            fragmentShader: `uniform vec3 uTop,uHorizon,uGround,uSunColor,uSunDir; uniform float uSunVis; varying vec3 vDir;
+      void main(){ vec3 d = normalize(vDir);
+        vec3 col = mix(uHorizon, uTop, smoothstep(-0.02, 0.5, d.y));
+        col = mix(uGround, col, smoothstep(-0.12, 0.0, d.y));
+        float s = max(dot(d, normalize(uSunDir)), 0.0);
+        col += uSunColor*(pow(s, 900.0)*2.0 + pow(s, 12.0)*0.28)*uSunVis;
+        gl_FragColor = vec4(col, 1.0); }`,
+          }),
+        );
+        sky.renderOrder = -1;
+        scene.add(sky);
+
+        const starN = 1600,
+          sp = new Float32Array(starN * 3);
+        for (let i = 0; i < starN; i++) {
+          const u = Math.random() * Math.PI * 2,
+            y = 0.06 + Math.random() * 0.94,
+            rr = Math.sqrt(1 - y * y),
+            r = 1000;
+          sp[i * 3] = Math.cos(u) * rr * r;
+          sp[i * 3 + 1] = y * r;
+          sp[i * 3 + 2] = Math.sin(u) * rr * r;
+        }
+        const sGeo = new THREE.BufferGeometry();
+        sGeo.setAttribute("position", new THREE.BufferAttribute(sp, 3));
+        const sMat = new THREE.PointsMaterial({
+          color: 0xffffff,
+          size: 1.6,
+          sizeAttenuation: false,
+          transparent: true,
+          opacity: 0,
+          fog: false,
+          depthWrite: false,
+        });
+        const stars = new THREE.Points(sGeo, sMat);
+        scene.add(stars);
+
+        const hemi = new THREE.HemisphereLight(0xffffff, 0x445533, 0.6);
+        scene.add(hemi);
+        const sun = new THREE.DirectionalLight(0xffffff, 1);
+        scene.add(sun);
+        scene.fog = new THREE.Fog(0xc9b7a2, 40, 420);
+
+        const TILE = 70,
+          N = small ? 22000 : 60000,
+          SEG = 4;
+        const bPos = [],
+          bIdx = [];
+        for (let i = 0; i <= SEG; i++) {
+          const y = i / SEG,
+            w = 0.055 * (1 - y * 0.85);
+          bPos.push(-w, y, 0, w, y, 0);
+        }
+        for (let i = 0; i < SEG; i++) {
+          const a = i * 2;
+          bIdx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2);
+        }
+        const blade = new THREE.InstancedBufferGeometry();
+        blade.setAttribute(
+          "position",
+          new THREE.Float32BufferAttribute(bPos, 3),
+        );
+        blade.setIndex(bIdx);
+        const off = new Float32Array(N * 2),
+          hgt = new Float32Array(N),
+          ang = new Float32Array(N),
+          tint = new Float32Array(N);
+        for (let i = 0; i < N; i++) {
+          off[i * 2] = (Math.random() - 0.5) * TILE;
+          off[i * 2 + 1] = (Math.random() - 0.5) * TILE;
+          hgt[i] = 0.35 + Math.random() * 0.55;
+          ang[i] = Math.random() * Math.PI;
+          tint[i] = Math.random();
+        }
+        blade.setAttribute(
+          "aOffset",
+          new THREE.InstancedBufferAttribute(off, 2),
+        );
+        blade.setAttribute(
+          "aHeight",
+          new THREE.InstancedBufferAttribute(hgt, 1),
+        );
+        blade.setAttribute(
+          "aAngle",
+          new THREE.InstancedBufferAttribute(ang, 1),
+        );
+        blade.setAttribute(
+          "aTint",
+          new THREE.InstancedBufferAttribute(tint, 1),
+        );
+        blade.instanceCount = N;
+
+        const gU = {
+          uTime: { value: 0 },
+          uWind: { value: 0.3 },
+          uTile: { value: TILE },
+          uCam: { value: new THREE.Vector2() },
+          uGustP: { value: new THREE.Vector2(0, -9999) },
+          uGustT: { value: -99 },
+          uBase: { value: new THREE.Color() },
+          uTip: { value: new THREE.Color() },
+          uSunColor: { value: new THREE.Color() },
+          uAmb: { value: new THREE.Color() },
+          uLight: { value: 1 },
+          uFogColor: { value: new THREE.Color() },
+          uFogNear: { value: 40 },
+          uFogFar: { value: 420 },
+        };
+        const grassMat = new THREE.ShaderMaterial({
+          uniforms: gU,
+          side: THREE.DoubleSide,
+          vertexShader: `
+      uniform float uTime, uWind, uTile, uGustT; uniform vec2 uCam, uGustP;
+      attribute vec2 aOffset; attribute float aHeight, aAngle, aTint;
+      varying float vY, vTint, vDepth;
+      ${H_GLSL}
+      void main(){
+        vec2 rel = mod(aOffset - uCam + uTile*0.5, uTile) - uTile*0.5;
+        vec2 w = uCam + rel;
+        float fade = 1.0 - smoothstep(uTile*0.5 - 12.0, uTile*0.5, length(rel));
+        float h = aHeight*fade;
+        vec3 p = position; float t = p.y; p.y *= h;
+        float c = cos(aAngle), s = sin(aAngle);
+        p.xz = vec2(c*p.x - s*p.z, s*p.x + c*p.z);
+        float ph = uTime*1.7 + w.x*0.23 + w.y*0.17;
+        float sway = (sin(ph)*0.6 + sin(ph*2.3 + 1.7)*0.22 + 0.4)*uWind;
+        float d = distance(w, uGustP); float age = uTime - uGustT;
+        float ring = age > 0.0 ? exp(-pow((d - age*10.0)*0.32, 2.0))*exp(-age*0.6) : 0.0;
+        vec2 dir = normalize(vec2(1.0, 0.35));
+        vec2 gd = d > 0.001 ? (w - uGustP)/d : dir;
+        vec2 bend = dir*sway*0.38 + gd*ring*1.1;
+        float k = t*t;
+        p.xz += bend*k*h; p.y -= length(bend)*k*h*0.3;
+        vec3 world = vec3(w.x, H(w), w.y) + p;
+        vec4 mv = viewMatrix*vec4(world, 1.0);
+        gl_Position = projectionMatrix*mv;
+        vY = t; vTint = aTint; vDepth = -mv.z;
+      }`,
+          fragmentShader: `
+      uniform vec3 uBase, uTip, uSunColor, uAmb, uFogColor; uniform float uLight, uFogNear, uFogFar;
+      varying float vY, vTint, vDepth;
+      void main(){
+        vec3 col = mix(uBase, uTip, pow(vY, 1.25));
+        col *= 0.82 + vTint*0.32;
+        col *= uAmb + uSunColor*uLight*(0.35 + 0.65*vY);
+        float f = smoothstep(uFogNear, uFogFar, vDepth);
+        gl_FragColor = vec4(mix(col, uFogColor, f), 1.0);
+      }`,
+        });
+        const grass = new THREE.Mesh(blade, grassMat);
+        grass.frustumCulled = false;
+        scene.add(grass);
+
+        const K = [
+          {
+            top: 0x2c3b58,
+            hor: 0xeab58c,
+            gnd: 0x6a5a48,
+            sunC: 0xffcf9e,
+            sun: [1, 0.07, -0.35],
+            sunVis: 1,
+            light: 0.75,
+            amb: 0x5d5a66,
+            fog: 0xc8a993,
+            near: 30,
+            far: 330,
+            base: 0x2f3b22,
+            tip: 0xa49d63,
+            ground: 0x34402a,
+            wind: 0.18,
+            z: 0,
+            eye: 1.35,
+            yaw: -0.35,
+            pitch: 0.0,
+            stars: 0,
+          },
+          {
+            top: 0x3c7cc2,
+            hor: 0xd3e5ef,
+            gnd: 0x8a9a7a,
+            sunC: 0xfff4dc,
+            sun: [0.25, 1, -0.4],
+            sunVis: 1,
+            light: 1.05,
+            amb: 0x6f7f86,
+            fog: 0xc9dbe4,
+            near: 60,
+            far: 520,
+            base: 0x46642a,
+            tip: 0xc2c66c,
+            ground: 0x4a5f2c,
+            wind: 1.6,
+            z: -42,
+            eye: 1.6,
+            yaw: 0.0,
+            pitch: -0.02,
+            stars: 0,
+          },
+          {
+            top: 0x3b3058,
+            hor: 0xf18b5c,
+            gnd: 0x5a3e3a,
+            sunC: 0xffa070,
+            sun: [-1, 0.06, -0.55],
+            sunVis: 1,
+            light: 0.8,
+            amb: 0x5a4660,
+            fog: 0xbd7a68,
+            near: 30,
+            far: 360,
+            base: 0x34331f,
+            tip: 0xcf914d,
+            ground: 0x3a3622,
+            wind: 0.7,
+            z: -86,
+            eye: 1.5,
+            yaw: 0.42,
+            pitch: 0.01,
+            stars: 0.12,
+          },
+          {
+            top: 0x03050c,
+            hor: 0x18213a,
+            gnd: 0x0a0e16,
+            sunC: 0x8fa6d6,
+            sun: [-0.3, 0.5, 0.2],
+            sunVis: 0,
+            light: 0.32,
+            amb: 0x1a2236,
+            fog: 0x0d1322,
+            near: 20,
+            far: 260,
+            base: 0x0b120f,
+            tip: 0x3b4c55,
+            ground: 0x0e1511,
+            wind: 0.4,
+            z: -126,
+            eye: 1.45,
+            yaw: 0.1,
+            pitch: 0.22,
+            stars: 1,
+          },
+        ];
+        K.forEach((k) => {
+          for (const key of [
+            "top",
+            "hor",
+            "gnd",
+            "sunC",
+            "amb",
+            "fog",
+            "base",
+            "tip",
+            "ground",
+          ])
+            k[key] = new THREE.Color(k[key]);
+          k.sun = new THREE.Vector3(...k.sun).normalize();
+        });
+
+        const S = { f: 0 };
+        const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+        const plates = [...document.querySelectorAll(".plate")];
+
+        function targetF() {
+          const yc = window.innerHeight / 2;
+          const c = plates.map((p) => {
+            const r = p.getBoundingClientRect();
+            return r.top + r.height / 2;
+          });
+          if (yc <= c[0]) return 0;
+          if (yc >= c[c.length - 1]) return c.length - 1;
+          for (let i = 0; i < c.length - 1; i++)
+            if (yc >= c[i] && yc < c[i + 1])
+              return i + (yc - c[i]) / (c[i + 1] - c[i]);
+          return 0;
+        }
+
+        const tmpV = new THREE.Vector3();
+        const lerp = (a, b, t) => a + (b - a) * t;
+        const ease = (t) => t * t * (3 - 2 * t);
+
+        function apply(f) {
+          const i = Math.min(Math.floor(f), K.length - 2),
+            t = ease(f - i),
+            a = K[i],
+            b = K[i + 1];
+          skyU.uTop.value.copy(a.top).lerp(b.top, t);
+          skyU.uHorizon.value.copy(a.hor).lerp(b.hor, t);
+          skyU.uGround.value.copy(a.gnd).lerp(b.gnd, t);
+          skyU.uSunColor.value.copy(a.sunC).lerp(b.sunC, t);
+          skyU.uSunDir.value.copy(a.sun).lerp(b.sun, t).normalize();
+          skyU.uSunVis.value = lerp(a.sunVis, b.sunVis, t);
+          scene.fog.color.copy(a.fog).lerp(b.fog, t);
+          scene.fog.near = lerp(a.near, b.near, t);
+          scene.fog.far = lerp(a.far, b.far, t);
+          tMat.color.copy(a.ground).lerp(b.ground, t);
+          sun.color.copy(skyU.uSunColor.value);
+          sun.intensity = lerp(a.light, b.light, t) * 1.2;
+          sun.position.copy(skyU.uSunDir.value).multiplyScalar(100);
+          hemi.color.copy(a.hor).lerp(b.hor, t);
+          hemi.groundColor.copy(a.ground).lerp(b.ground, t);
+          hemi.intensity = lerp(a.light, b.light, t) * 0.7;
+          gU.uBase.value.copy(a.base).lerp(b.base, t);
+          gU.uTip.value.copy(a.tip).lerp(b.tip, t);
+          gU.uSunColor.value.copy(skyU.uSunColor.value);
+          gU.uAmb.value.copy(a.amb).lerp(b.amb, t);
+          gU.uLight.value = lerp(a.light, b.light, t);
+          gU.uFogColor.value.copy(scene.fog.color);
+          gU.uFogNear.value = scene.fog.near;
+          gU.uFogFar.value = scene.fog.far;
+          gU.uWind.value = reduce ? 0.25 : lerp(a.wind, b.wind, t);
+          sMat.opacity = lerp(a.stars, b.stars, t);
+          canvas.style.background = "#" + scene.fog.color.getHexString();
+
+          const z = lerp(a.z, b.z, t),
+            x = Math.sin(z * 0.025) * 5;
+          const yaw = lerp(a.yaw, b.yaw, t) + mouse.x * 0.12,
+            pitch = lerp(a.pitch, b.pitch, t) - mouse.y * 0.05;
+          camera.position.set(x, H(x, z) + lerp(a.eye, b.eye, t), z);
+          tmpV
+            .set(Math.sin(yaw), Math.sin(pitch) - 0.04, -Math.cos(yaw))
+            .add(camera.position);
+          camera.lookAt(tmpV);
+          gU.uCam.value.set(x, z);
+          sky.position.copy(camera.position);
+          stars.position.copy(camera.position);
+        }
+
+        function resize() {
+          const w = window.innerWidth,
+            h = window.innerHeight;
+          renderer.setSize(w, h, false);
+          camera.aspect = w / h;
+          camera.updateProjectionMatrix();
+        }
+        window.addEventListener("resize", resize);
+        resize();
+
+        window.addEventListener(
+          "pointermove",
+          (e) => {
+            mouse.tx = e.clientX / window.innerWidth - 0.5;
+            mouse.ty = e.clientY / window.innerHeight - 0.5;
+          },
+          { passive: true },
+        );
+
+        const ray = new THREE.Raycaster(),
+          ndc = new THREE.Vector2();
+        const clock = new THREE.Clock();
+        let time = 2.0;
+        function gustAt(clientX, clientY) {
+          ndc.set(
+            (clientX / window.innerWidth) * 2 - 1,
+            -(clientY / window.innerHeight) * 2 + 1,
+          );
+          ray.setFromCamera(ndc, camera);
+          const hit = ray.intersectObject(terrain, false)[0];
+          const p = hit
+            ? hit.point
+            : camera.position.clone().add(new THREE.Vector3(0, 0, -12));
+          gU.uGustP.value.set(p.x, p.z);
+          gU.uGustT.value = time;
+        }
+        plates.forEach((p) =>
+          p.addEventListener("pointerdown", (e) => {
+            if (e.target.closest("button")) return;
+            gustAt(e.clientX, e.clientY);
+          }),
+        );
+        document.getElementById("gust-btn").addEventListener("click", () => {
+          const fwd = new THREE.Vector3();
+          camera.getWorldDirection(fwd);
+          const p = camera.position.clone().addScaledVector(fwd, 14);
+          gU.uGustP.value.set(p.x, p.z);
+          gU.uGustT.value = time;
+        });
+
+        function frame() {
+          const dt = Math.min(clock.getDelta(), 0.05);
+          if (!reduce) time += dt;
+          const tf = targetF();
+          const k = reduce ? 1 : 1 - Math.pow(0.001, dt);
+          S.f += (tf - S.f) * k;
+          mouse.x += (mouse.tx - mouse.x) * (reduce ? 0 : k * 0.6);
+          mouse.y += (mouse.ty - mouse.y) * (reduce ? 0 : k * 0.6);
+          gU.uTime.value = time;
+          apply(S.f);
+          renderer.render(scene, camera);
+          requestAnimationFrame(frame);
+        }
+        S.f = targetF();
+        requestAnimationFrame(frame);
+      }
+    </script>
+  </body>
+</html>
