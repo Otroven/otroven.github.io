@@ -12,16 +12,16 @@ const CONTACT_LINKS = [
 // Core — 이력서 상단 요약 3줄
 const CORE = [
   {
-    title: '웹뷰 하이브리드 앱',
-    body: '웹-앱 브릿지 설계·생체인증 자동 로그인 연결, 첫 진입 JS 번들 67% 감소',
+    title: '디자인 시스템 · 디자이너 협업',
+    body: 'Figma MCP와 Cursor로 공통 컴포넌트 58개를 2주 만에 사내 npm·Storybook으로 구축. 디자이너가 관리하는 디자인 원칙 문서로 AI 작업 결과를 점검',
   },
   {
-    title: 'AI 제품 0→1',
-    body: 'Claude 교차 검증 파이프라인 기반 수학 문제 서비스를 단독 기획·운영, 재원생 50~100명',
+    title: '안정성 · 성능',
+    body: '20년 된 델파이 선거방송 시스템을 React로 재구축해 2025 대선·2026 지선 생방송 장애 0건. 사내 앱 첫 진입 JS 2.1MB → 710KB',
   },
   {
-    title: '레거시 현대화',
-    body: '20년 된 델파이 선거방송 시스템을 React로 재구축, 외주 4MM→0 · 생방송 장애 0건',
+    title: 'AI로 개발 프로세스 효율화',
+    body: '자연어 테스트 케이스를 Claude가 에뮬레이터에서 실행·녹화하는 QA 자동화로 2주간 500건+ 처리, AI·사람 판정 불일치 20% → 5% 미만',
   },
 ];
 
@@ -31,23 +31,31 @@ const WORK = [
     org: 'SBS',
     role: '프론트엔드 개발자',
     period: '2024.01 – 현재',
-    summary: '사내 앱과 선거방송 프론트엔드를 담당하고 있습니다.',
+    summary: '선거방송, 사내 디자인 시스템, 사내 모바일 앱과 영수증 OCR 앱의 프론트엔드를 맡고 있습니다.',
     items: [
       {
-        title: 'SBS 사내 모바일 앱',
-        body: '파편화된 ERP·그룹웨어 모듈 30개+를 RN WebView 앱 하나로 통합. 웹-앱 브릿지를 { type, data } 메시지 규약으로 설계하고, 생체인증 자동 로그인을 연결해 인증 정보는 네이티브에서만 처리. 단일 번들 2.1MB였던 첫 진입을 lazy loading·코드 스플리팅으로 약 710KB까지 줄였습니다(67%↓). 1인 개발 6개월 만에 출시해 임직원 1,000명이 사용 중입니다.',
-      },
-      {
         title: 'SBS NEW 선거방송 시스템',
-        body: '외주 2명이 2개월씩 붙던 20년 된 델파이 시스템을 React와 Spring으로 재구축. 백엔드 2명과 화면·통신 분리 구조를 설계해, 외주 없이 2025 대선·2026 지선 생방송을 장애 0건으로 운영하고 있습니다.',
+        body: '선거마다 외주 개발자 2명이 2~3개월씩(회당 4~6MM) 붙던 20년 된 델파이 시스템을 React 웹으로 재구축했습니다(프론트엔드 단독, 백엔드 2명). 실시간 대시보드와 송출 화면의 갱신 방식을 분리하고 배포 전 API 응답 스키마를 정적 검사해, 외주 없이 2025 대선·2026 지선 생방송을 장애 0건으로 운영했습니다. 방송 중 수정 요청도 송출 중단 없이 5분 안에 반영했습니다.',
         links: [
           { label: '데모 사이트', href: 'https://sbs-new-election.web.app/' },
           { label: '실제 사용 영상', href: 'https://www.youtube.com/watch?v=dnyVQ_zKcu8&t=427s' },
         ],
       },
       {
+        title: 'SBS 사내 디자인 시스템',
+        body: 'Cursor와 Figma MCP로 Figma 디자인을 읽어 공통 컴포넌트 58개를 2주 만에 사내 npm 패키지(Verdaccio)와 Storybook으로 정리했습니다. 디자인 원칙을 base 문서로 만들어 AI 작업 컨텍스트에 항상 포함하고, 마지막으로 작업한 화면이 원칙에 맞는지 점검하게 했습니다. base 문서는 디자이너가 관리하도록 팀 규약을 정했습니다.',
+      },
+      {
         title: 'SBS 영수증 OCR 앱',
-        body: '재무·정산팀 인터뷰로 영수증 수기 처리 문제를 발굴해 기획·개발. 클로바 OCR과 Gemini API 결과를 교차 확인해 오인식을 걸러내고, 사내 보안 정책상 CodePush 서버를 직접 구축해 JS 수정을 스토어 심사 없이 반영했습니다(2026.11 오픈 예정).',
+        body: '재무·정산팀 인터뷰로 영수증 수기 처리 문제를 발굴해 기획·개발했습니다. 클로바 OCR과 Gemini API 결과를 교차 확인해 엇갈린 건만 사람에게 넘기고, 사내 보안 정책상 CodePush 서버를 직접 구축해 JS 수정을 스토어 심사 없이 반영했습니다. 착수 2개월 만에 QA에 들어갔습니다(2026.11 오픈 예정).',
+      },
+      {
+        title: 'SBS 정산 앱 AI QA 자동화',
+        body: 'QA팀이 노션에 자연어로 쓴 테스트 케이스를 Claude가 Android 에뮬레이터에서 직접 수행·녹화하고, 사람은 영상으로 결과를 확정하는 구조를 제안·구축했습니다. Figma 화면 명세 번호를 입력 필수 항목으로 바꿔 AI 판정 불일치를 약 20%에서 5% 미만으로 낮췄고, 배포 전 2주간 500건 이상을 처리하며 백엔드 로직 오류 10건 이상을 찾았습니다.',
+      },
+      {
+        title: 'SBS 사내 모바일 앱',
+        body: '파편화된 ERP·그룹웨어 모듈 30개+를 RN WebView 앱 하나로 통합. 웹-앱 브릿지를 { type, data } 메시지 규약으로 설계하고, 생체인증 자동 로그인을 연결해 인증 정보는 네이티브에서만 처리. 단일 번들 2.1MB였던 첫 진입을 lazy loading·코드 스플리팅으로 약 710KB까지 줄였습니다(66%↓). 1인 개발 6개월 만에 출시해 임직원 1,000명이 사용 중입니다.',
       },
     ],
   },
@@ -74,9 +82,7 @@ const WORK = [
         body: '수중 흔들림·저조도로 사진이 흐려지는 문제를 AVFoundation 자동 보정 카메라 모드로 해결했습니다. 탑재 제품이 킥스타터에서 $33,671 펀딩을 받았습니다.',
         links: [
           { label: '킥스타터', href: 'https://www.kickstarter.com/projects/officialdiveroid/diveroid-the-all-in-one-underwater-companion' },
-          
         ],
-        
       },
     ],
   },
@@ -113,17 +119,32 @@ const PROJECTS = [
       '강사가 직접 풀어 승인해야만 정식 문제로 등록되게 해 오답 문제의 학생 노출을 차단',
       '3개월 만에 출시해 재원생 약 50~100명 대상 운영, 검수를 통과한 문제 약 100개 발행',
     ],
+    links: [],
+  },
+  {
+    title: '빠져들었던 몽골 초원',
+    subtitle: 'three.js 장면 연구',
+    period: '2026.10 · 1인',
+    summary:
+      'thisisneverthat × GORE-TEX FW25 룩북에서 출발해, 스크롤하면 몽골 초원에 새벽부터 밤까지 하루가 흐르는 장면을 three.js로 만들었습니다.',
+    bullets: [
+      '풀 6만 가닥을 InstancedBufferGeometry 하나로 그리고, 셰이더에서 위치를 감아 돌려 끝없는 초원처럼 보이게 함',
+      '같은 높이 함수를 JavaScript와 GLSL에 두어 풀이 언덕 위에서도 지형에 붙도록 함',
+      '스크롤 위치로 하늘·빛·바람·카메라 키프레임을 보간하고, 누른 지점에서 퍼지는 돌풍을 셰이더로 구현',
+    ],
+    links: [{ label: '페이지 보기', href: '/lab/steppe-study/' }],
   },
 ];
 
 // Tech Stack
 const STACK = [
-  { label: '주력', items: ['React', 'TypeScript', 'React Native', 'Next.js', 'Tailwind CSS'] },
+  { label: '주력', items: ['React', 'TypeScript', 'Next.js', 'React Query', 'Tailwind CSS', 'Storybook', 'React Native'] },
   {
     label: '사용 경험',
-    items: ['React Query', 'Node.js (Express)', 'Supabase', 'Prisma', 'Chart.js', 'Storybook', 'Verdaccio', 'FCM'],
+    items: ['Node.js (Express)', 'Supabase', 'Prisma', 'AWS Lambda', 'FCM', 'Vercel', 'Gitea Actions', 'Verdaccio', 'Chart.js'],
   },
   { label: 'AI 활용', items: ['Claude API', 'Gemini API', 'Claude Code', 'Cursor', 'Figma MCP'] },
+  { label: '학습 중', items: ['three.js', 'GLSL'] },
 ];
 
 // Etc
@@ -134,6 +155,7 @@ const ETC = [
     linkLabel: '#3856',
   },
   { body: '월간 《방송과 기술》 기고 — SBS 선거방송 (2024.05)' },
+  { body: 'TOEIC 925' },
   { body: '서울여대 창업보육센터 입주기업 선정 (2021.12)' },
   { body: '생애최초 청년창업 정부 지원사업 최종 합격 후 협약 (2021.08)' },
 ];
@@ -172,6 +194,24 @@ const ETC = [
     </div>
   </section>
 
+
+  <!-- ========== Core ========== -->
+  <section class="about-section">
+    <header class="section-head">
+      <h2>Core</h2>
+    </header>
+
+    <div class="core-grid">
+      {
+        CORE.map((c) => (
+          <div class="core-item">
+            <h3>{c.title}</h3>
+            <p>{c.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
 
   <!-- ========== Work ========== -->
   <section class="about-section">
@@ -248,6 +288,15 @@ const ETC = [
                 <li>{b}</li>
               ))}
             </ul>
+            {p.links.length > 0 && (
+              <p class="sub-links project-links">
+                {p.links.map((l) => (
+                  <a href={l.href} target={l.href.startsWith('http') ? '_blank' : undefined} rel={l.href.startsWith('http') ? 'noopener noreferrer' : undefined}>
+                    {l.label} ↗
+                  </a>
+                ))}
+              </p>
+            )}
           </div>
         ))
       }
@@ -456,6 +505,10 @@ const ETC = [
 
   .sub-links a:hover {
     text-decoration: underline;
+  }
+
+  .project-links {
+    margin-top: 0.9em !important;
   }
 
   .bullet-list {
