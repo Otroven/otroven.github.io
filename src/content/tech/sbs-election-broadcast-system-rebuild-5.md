@@ -2,7 +2,6 @@
 title: 'SBS 선거방송 시스템 리빌드 ⑤'
 pubDate: 2025-12-13
 tags: ['frontend', '선거방송', 'sbs']
-draft: true
 ---
 
 3편에서 "왜 웹이었나"를 설명하면서 이렇게 썼다.
